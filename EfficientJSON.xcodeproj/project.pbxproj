@@ -12,6 +12,9 @@
 		E45619201993A1DC00A38730 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E456191E1993A1DC00A38730 /* Main.storyboard */; };
 		E45619221993A1DC00A38730 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E45619211993A1DC00A38730 /* Images.xcassets */; };
 		E456192E1993A1DC00A38730 /* EfficientJSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E456192D1993A1DC00A38730 /* EfficientJSONTests.swift */; };
+		E45619381993A20C00A38730 /* JSONSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45619371993A20C00A38730 /* JSONSwift.swift */; };
+		E4D8C8B11998E37E00546F77 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C8B01998E37E00546F77 /* Result.swift */; };
+		E4D8C8B31998E3F700546F77 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C8B21998E3F700546F77 /* Box.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +37,9 @@
 		E45619271993A1DC00A38730 /* EfficientJSONTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EfficientJSONTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E456192C1993A1DC00A38730 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E456192D1993A1DC00A38730 /* EfficientJSONTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EfficientJSONTests.swift; sourceTree = "<group>"; };
+		E45619371993A20C00A38730 /* JSONSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSwift.swift; sourceTree = "<group>"; };
+		E4D8C8B01998E37E00546F77 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
+		E4D8C8B21998E3F700546F77 /* Box.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,8 +81,10 @@
 		E45619171993A1DC00A38730 /* EfficientJSON */ = {
 			isa = PBXGroup;
 			children = (
-				E456191A1993A1DC00A38730 /* AppDelegate.swift */,
 				E456191C1993A1DC00A38730 /* ViewController.swift */,
+				E45619371993A20C00A38730 /* JSONSwift.swift */,
+				E4D8C8B01998E37E00546F77 /* Result.swift */,
+				E4D8C8B21998E3F700546F77 /* Box.swift */,
 				E456191E1993A1DC00A38730 /* Main.storyboard */,
 				E45619211993A1DC00A38730 /* Images.xcassets */,
 				E45619181993A1DC00A38730 /* Supporting Files */,
@@ -87,6 +95,7 @@
 		E45619181993A1DC00A38730 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E456191A1993A1DC00A38730 /* AppDelegate.swift */,
 				E45619191993A1DC00A38730 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -208,8 +217,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E45619381993A20C00A38730 /* JSONSwift.swift in Sources */,
 				E456191D1993A1DC00A38730 /* ViewController.swift in Sources */,
+				E4D8C8B11998E37E00546F77 /* Result.swift in Sources */,
 				E456191B1993A1DC00A38730 /* AppDelegate.swift in Sources */,
+				E4D8C8B31998E3F700546F77 /* Box.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,6 +407,7 @@
 				E45619331993A1DC00A38730 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E45619341993A1DC00A38730 /* Build configuration list for PBXNativeTarget "EfficientJSONTests" */ = {
 			isa = XCConfigurationList;
@@ -403,6 +416,7 @@
 				E45619361993A1DC00A38730 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
