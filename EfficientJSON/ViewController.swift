@@ -24,7 +24,7 @@ class ViewController: UIViewController {
         }
         
 */
-        getUser4(jsonData ){ result in
+        getUser5(jsonData ){ result in
             switch result {
             case let .Error(err):
                 println("Error")

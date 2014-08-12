@@ -21,10 +21,19 @@ struct Blog: Printable {
         return "Blog { id = \(id), name = \(name), needsPassword = \(needsPassword), url = \(url)}"
     }
     
-      static func create(id: Int)(name: String)(needsPassword: Int)(url:String) -> Blog {
+    static func create(id: Int)(name: String)(needsPassword: Int)(url:String) -> Blog {
             return Blog(id: id, name: name, needsPassword: Bool(needsPassword), url: toURL(url))
     }
-
+    static func decode(json: JSON) -> Result<Blog> {
+        let blog = JSONObject(json) >>> { dict in
+            Blog.create <^>
+                dict["id"]    >>> JSONInt    <*>
+                dict["name"] >>> JSONString <*>
+                dict["needspassword"] >>> JSONInt <*>
+                dict["url"] >>> JSONString
+        }
+        return resultFromOptional(blog, NSError()) // custom error message
+    }
 }
 /*
 enum Result<A> {
@@ -89,6 +98,24 @@ func <*><A, B>(f: (A -> B)?, a: A?) -> B? {
         }
     }
     return .None
+}
+
+func resultFromOptional<A>(optional: A?, error: NSError) -> Result<A> {
+    if let a = optional {
+        return .Value(Box(a))
+    } else {
+        return .Error(error)
+    }
+}
+
+func decodeJSON(data: NSData) -> JSON? {
+    var jsonErrorOptional: NSError?
+    let jsonOptional: JSON? = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(0), error: &jsonErrorOptional)
+    if let json: JSON = jsonOptional {
+        return json
+    } else {
+        return .None
+    }
 }
 
 func getUser0(jsonOptional: NSData?) {
@@ -247,7 +274,7 @@ func getUser4(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
         if let blogs = dict["blogs"] >>> JSONObject   {
             if let collection = blogs["blog"] >>> JSONCollection {
                 for blog : AnyObject in collection {
-                    if let blogInfo = blog >>> JSONObject  {
+                  if let blogInfo = blog >>> JSONObject                     {
                         println("\(blogInfo)")
                         let blog1 = Blog.create  <^>
                             blogInfo["id"] >>> JSONInt <*>
@@ -261,6 +288,49 @@ func getUser4(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
                              callback(.Error(NSError()))
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+func getUser5(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
+    
+    var jsonErrorOptional: NSError?
+    let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional,
+        options: NSJSONReadingOptions(0),
+        error: &jsonErrorOptional)
+    
+    if let err = jsonErrorOptional {
+        callback(.Error(err))
+        return
+    }
+    
+    
+    if let dict =   jsonObject >>> JSONObject  {
+        if let blogs = dict["blogs"] >>> JSONObject   {
+            if let collection = blogs["blog"] >>> JSONCollection {
+                for blog : AnyObject in collection {
+                    let blogInfo:()? = blog >>> JSONObject  >>> Blog.decode >>> callback
+                  
+                  /*  {
+                        callback ( Blog.decode (blogInfo ))
+                    }*/
+                    
+                }
+            }
+        }
+    }
+}
+
+func getUser6(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
+
+    if let dict =  jsonOptional >>> decodeJSON  >>> JSONObject  {
+        if let blogs = dict["blogs"] >>> JSONObject   {
+            if let collection = blogs["blog"] >>> JSONCollection {
+                for blog : AnyObject in collection {
+                    let blogInfo:()? = blog >>> JSONObject  >>> Blog.decode >>> callback
+
                 }
             }
         }
