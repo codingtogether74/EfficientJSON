@@ -17,13 +17,13 @@ class ViewController: UIViewController {
         let jsonData = jsonString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
         
         
-//        getUser0(jsonData)
+//        getBlog0(jsonData)
 /*
         getUser1(jsonData){ blog in
         println("\(blog)")
         }
         
-        getUser6(jsonData ){ result in
+        getBlog6(jsonData ){ result in
             switch result {
             case let .Error(err):
                 println("Error")
@@ -33,7 +33,7 @@ class ViewController: UIViewController {
             }
         }
 */
-        getUser7(jsonData ){ result in
+        getBlog7(jsonData ){ result in
             for res: Result<Blog> in result {
                 switch res {
                 case let .Error(err):

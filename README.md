@@ -33,6 +33,9 @@ var json : [String: AnyObject] = [
   ]
 ]
 </pre>
+
+We need to restore the array of blogs.
+
 Unfortunately enum
 
 <pre>

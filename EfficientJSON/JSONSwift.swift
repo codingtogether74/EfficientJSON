@@ -44,6 +44,7 @@ enum Result<A> {
 }
 
 */
+// functions
 func dictionary(input: JSONDictionary, key: String) ->  JSONDictionary? {
     return input[key] >>> { $0 as? JSONDictionary } //[String:AnyObject]
 }
@@ -82,6 +83,8 @@ func join<A>(elements: [A?]) -> [A]? {
     }
     return result
 }
+
+// operators
 
 infix operator >>> { associativity left precedence 150 }
 
@@ -139,7 +142,7 @@ func decodeJSON(data: NSData) -> JSON? {
     }
 }
 
-func getUser0(jsonOptional: NSData?) {
+func getBlog0(jsonOptional: NSData?) {
     var jsonErrorOptional: NSError?
     let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional, options: NSJSONReadingOptions(0), error: &jsonErrorOptional)
 
@@ -168,7 +171,7 @@ func getUser0(jsonOptional: NSData?) {
 
 }
 
-func getUser1(jsonOptional: NSData?, callback: (Blog) -> ()) {
+func getBlog1(jsonOptional: NSData?, callback: (Blog) -> ()) {
    var jsonErrorOptional: NSError?
    let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional, options: NSJSONReadingOptions(0), error: &jsonErrorOptional)
     
@@ -197,7 +200,7 @@ func getUser1(jsonOptional: NSData?, callback: (Blog) -> ()) {
     }
 }
 
-func getUser2(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
+func getBlog2(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     var jsonErrorOptional: NSError?
     let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional,
         options: NSJSONReadingOptions(0),
@@ -236,7 +239,7 @@ func getUser2(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     callback(.Error(NSError()))
 }
 
-func getUser3(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
+func getBlog3(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     var jsonErrorOptional: NSError?
     let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional,
         options: NSJSONReadingOptions(0),
@@ -278,7 +281,7 @@ func toURL(urlString: String) -> NSURL {
     return NSURL(string: urlString)
 }
 
-func getUser4(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
+func getBlog4(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     
     var jsonErrorOptional: NSError?
     let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional,
@@ -315,7 +318,7 @@ func getUser4(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     }
 }
 
-func getUser5(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
+func getBlog5(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     
     var jsonErrorOptional: NSError?
     let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional,
@@ -333,18 +336,14 @@ func getUser5(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
             if let collection = blogs["blog"] >>> JSONCollection {
                 for blog : AnyObject in collection {
                     let blogInfo:()? = blog >>> JSONObject  >>> Blog.decode >>> callback
-                  
-                  /*  {
-                        callback ( Blog.decode (blogInfo ))
-                    }*/
-                    
+   
                 }
             }
         }
     }
 }
 
-func getUser6(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
+func getBlog6(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
 
     if let dict =  jsonOptional >>> decodeJSON  >>> JSONObject  {
         if let blogs = dict["blogs"] >>> JSONObject   {
@@ -358,7 +357,7 @@ func getUser6(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     }
 }
 
-func getUser7(jsonOptional: NSData?, callback: ([Result<Blog>]) -> ()) {
+func getBlog7(jsonOptional: NSData?, callback: ([Result<Blog>]) -> ()) {
     let json =  jsonOptional >>> decodeJSON  >>> JSONObject
     let blogs: ()? =
     dictionary(json!,"blogs") >>> {
