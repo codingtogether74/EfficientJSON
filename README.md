@@ -45,9 +45,9 @@ enum Result<A> {
 doesn't work.
 
 I take enum Result from Maxwell Swadling
-https://github.com/maxpow4h/swiftz/blob/master/swiftz_core/swiftz_core/Result.swift
+https://github.com/maxpow4h/swiftz/blob/master/swiftz_core/swiftz_core/Result.swift ,
 
-which use class class Box<T>  for  an immutable box, necessary for recursive datatypes (such as List) to avoid compiler crashes
+which use class  Box<T>  for  an immutable box, necessary for recursive datatypes (such as List) to avoid compiler crashes
 
 in article "Efficient JSON in Swift with Functional Concepts and Generic"
 
@@ -85,17 +85,15 @@ I take some ideas from "Parsing JSON in Swift"  by Chris Eidhof and final functi
 
 <pre>
 func getBlog7(jsonOptional: NSData?, callback: ([Result<Blog>]) -> ()) {
-    let json =  jsonOptional >>> decodeJSON  >>> JSONObject
-    let blogs: ()? =
-    dictionary(json!,"blogs") >>> {
-        array($0, "blog") >>> {
-            join($0.map(Blog.decode))}
-            >>> callback
+    let json =   jsonOptional >>> decodeJSON  >>> JSONObject
+    let blogs: ()? = dictionary(json!,"blogs") >>> {
+                             array($0, "blog") >>> {join($0.map(Blog.decode))}
+                                               >>> callback
     }
 }
 </pre>
 
-and call this function likt this
+and call this function like this
 
 <pre>
         getBlog7(jsonData ){ result in
