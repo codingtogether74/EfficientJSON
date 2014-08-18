@@ -44,6 +44,14 @@ enum Result<A> {
 }
 
 */
+func dictionary(input: JSONDictionary, key: String) ->  JSONDictionary? {
+    return input[key] >>> { $0 as? JSONDictionary } //[String:AnyObject]
+}
+
+func array(input: JSONDictionary, key: String) ->  [JSON]? {
+    return input[key] >>> { $0 as? [JSON] }
+}
+
 func JSONString(object: JSON) -> String? {
     return object as? String
 }
@@ -61,6 +69,18 @@ func JSONObject(object: JSON) -> JSONDictionary? {
 
 func JSONCollection(object: JSON) -> JSONArray? {
     return object as? JSONArray
+}
+
+func join<A>(elements: [A?]) -> [A]? {
+    var result : [A] = []
+    for element in elements {
+        if let x = element {
+            result.append(x)
+        } else {
+            return nil
+        }
+    }
+    return result
 }
 
 infix operator >>> { associativity left precedence 150 }
@@ -338,3 +358,12 @@ func getUser6(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     }
 }
 
+func getUser7(jsonOptional: NSData?, callback: ([Result<Blog>]) -> ()) {
+    let json =  jsonOptional >>> decodeJSON  >>> JSONObject
+    let blogs: ()? =
+    dictionary(json!,"blogs") >>> {
+        array($0, "blog") >>> {
+            join($0.map(Blog.decode))}
+            >>> callback
+    }
+}

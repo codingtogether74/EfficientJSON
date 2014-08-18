@@ -17,13 +17,9 @@ public final class Box<T> {
     public var value: T {
         return _value()
     }
-    
+/*
     public func map<U>(f: T -> U) -> Box<U> {
         return Box<U>(f(value)) // TODO: file rdar, type inf fails without <U>
     }
+*/
 }
-
-public func <^><T, U>(f: T -> U, x: Box<T>) -> Box<U> {
-    return x.map(f)
-}
-

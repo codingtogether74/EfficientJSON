@@ -22,23 +22,12 @@ public enum Result<V> {
             self = Result.Value(Box(v))
         }
     }
-/*
-    public func toEither() -> Either<NSError, V> {
-        switch self {
-        case let Error(e): return .Left(Box(e))
-        case let Value(v): return Either.Right(Box(v.value))
-        }
-    }
-*/
+
     public func fold<B>(value: B, f: V -> B) -> B {
         switch self {
         case Error(_): return value
         case let Value(v): return f(v.value)
         }
-    }
-    
-    public func flatMap<S>(f: V -> Result<S>) -> Result<S> {
-        return self >>> f
     }
     
     public static func error(e: NSError) -> Result<V> {
@@ -62,7 +51,7 @@ public func ==<V: Equatable>(lhs: Result<V>, rhs: Result<V>) -> Bool {
 public func !=<V: Equatable>(lhs: Result<V>, rhs: Result<V>) -> Bool {
     return !(lhs == rhs)
 }
-
+/*
 
 // 'functions'
 public func pure<V>(a: V) -> Result<V> {
@@ -90,3 +79,4 @@ public func >>><VA, VB>(a: Result<VA>, f: VA -> Result<VB>) -> Result<VB> {
     case let .Value(r): return f(r.value)
     }
 }
+*/
