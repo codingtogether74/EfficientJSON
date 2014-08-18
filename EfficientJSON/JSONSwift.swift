@@ -20,10 +20,11 @@ struct Blog: Printable {
     var description : String {
         return "Blog { id = \(id), name = \(name), needsPassword = \(needsPassword), url = \(url)}"
     }
-    
+
     static func create(id: Int)(name: String)(needsPassword: Int)(url:String) -> Blog {
             return Blog(id: id, name: name, needsPassword: Bool(needsPassword), url: toURL(url))
     }
+
     static func decode(json: JSON) -> Result<Blog> {
         let blog = JSONObject(json) >>> { dict in
             Blog.create <^>
