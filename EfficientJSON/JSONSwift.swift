@@ -144,7 +144,7 @@ func decodeJSON(data: NSData) -> JSON? {
 
 func getBlog0(jsonOptional: NSData?) {
     var jsonErrorOptional: NSError?
-    let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional, options: NSJSONReadingOptions(0), error: &jsonErrorOptional)
+    let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional!, options: NSJSONReadingOptions(0), error: &jsonErrorOptional)
 
     if let dict =  jsonObject as? Dictionary<String,AnyObject> {
         if let blogs = dict["blogs"] as AnyObject? as? Dictionary<String,AnyObject>   {
@@ -173,7 +173,7 @@ func getBlog0(jsonOptional: NSData?) {
 
 func getBlog1(jsonOptional: NSData?, callback: (Blog) -> ()) {
    var jsonErrorOptional: NSError?
-   let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional, options: NSJSONReadingOptions(0), error: &jsonErrorOptional)
+   let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional!, options: NSJSONReadingOptions(0), error: &jsonErrorOptional)
     
     if let dict =  jsonObject as? Dictionary<String,AnyObject> {
         if let blogs = dict["blogs"] as AnyObject? as? Dictionary<String,AnyObject>   {
@@ -202,7 +202,7 @@ func getBlog1(jsonOptional: NSData?, callback: (Blog) -> ()) {
 
 func getBlog2(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     var jsonErrorOptional: NSError?
-    let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional,
+    let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional!,
         options: NSJSONReadingOptions(0),
         error: &jsonErrorOptional)
     
@@ -241,7 +241,7 @@ func getBlog2(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
 
 func getBlog3(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     var jsonErrorOptional: NSError?
-    let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional,
+    let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional!,
         options: NSJSONReadingOptions(0),
         error: &jsonErrorOptional)
     
@@ -284,7 +284,7 @@ func toURL(urlString: String) -> NSURL {
 func getBlog4(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     
     var jsonErrorOptional: NSError?
-    let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional,
+    let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional!,
            options: NSJSONReadingOptions(0),
              error: &jsonErrorOptional)
     
@@ -321,7 +321,7 @@ func getBlog4(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
 func getBlog5(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     
     var jsonErrorOptional: NSError?
-    let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional,
+    let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional!,
         options: NSJSONReadingOptions(0),
         error: &jsonErrorOptional)
     

@@ -36,49 +36,6 @@ var json : [String: AnyObject] = [
 
 We need to restore the array of blogs.
 
-Unfortunately enum
-
-<pre>
-enum Result<A> {
-  case Error(NSError)
-  case Value(A)
-}
-</pre>
-
-doesn't work.
-
-I take enum Result from Maxwell Swadling
-https://github.com/maxpow4h/swiftz/blob/master/swiftz_core/swiftz_core/Result.swift ,
-
-which use class  Box<T>  for  an immutable box, necessary for recursive datatypes (such as List) to avoid compiler crashes
-
-in article "Efficient JSON in Swift with Functional Concepts and Generic"
-
-there is wrong function
-
-<pre>
-func <^><A, B>(f: A -> B?, a: A?) -> B? {
-    if let x = a {
-        return f(x)
-    } else {
-        return .None
-    }
-}
-</pre>
-
-I use
-
-<pre>
-func <*><A, B>(f: (A -> B)?, a: A?) -> B? {
-    if let x = a {
-        if let fx = f {
-            return fx(x)
-        }
-    }
-    return .None
-}
-
-</pre>
 
 I follow atrticle step by step and create some functions
 
@@ -112,4 +69,4 @@ and call this function like this
 
 </pre>
 
-
+I use curried functions to initialize struct Blog.
