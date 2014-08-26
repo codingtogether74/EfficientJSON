@@ -49,8 +49,8 @@ func dictionary(input: JSONDictionary, key: String) ->  JSONDictionary? {
     return input[key] >>> { $0 as? JSONDictionary } //[String:AnyObject]
 }
 
-func array(input: JSONDictionary, key: String) ->  [JSON]? {
-    return input[key] >>> { $0 as? [JSON] }
+func array(input: JSONDictionary, key: String) ->  JSONArray? { //[JSON]?
+    return input[key] >>> { $0 as?  JSONArray}                     //[JSON]
 }
 
 func JSONString(object: JSON) -> String? {
@@ -359,10 +359,28 @@ func getBlog6(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
 
 func getBlog7(jsonOptional: NSData?, callback: ([Result<Blog>]) -> ()) {
     let json =  jsonOptional >>> decodeJSON  >>> JSONObject
-    let blogs: ()? =
-    dictionary(json!,"blogs") >>> {
+    let blogs: ()? = dictionary(json!,"blogs") >>> {
         array($0, "blog") >>> {
             join($0.map(Blog.decode))}
             >>> callback
     }
 }
+
+func getBlog8(jsonOptional: NSData?, callback: ([Result<Blog>]) -> ()) {
+    let json: ()? =  jsonOptional >>> decodeJSON  >>> JSONObject >>> {
+                                         dictionary ($0,"blogs") >>> {
+                                               array($0, "blog") >>> {join($0.map(Blog.decode))
+                                                               } >>> callback
+        }
+    }
+}
+
+func getBlog9(jsonOptional: NSData?, callback: ([Result<Blog>]) -> ()) {
+    let json: ()? =  jsonOptional >>> decodeJSON  >>> JSONObject >>> {
+                                         dictionary ($0,"blogs") >>> {
+                                               array($0, "blog") >>> {
+                                            $0.map(Blog.decode)} >>> callback
+        }
+    }
+}
+

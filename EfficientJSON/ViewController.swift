@@ -22,7 +22,7 @@ class ViewController: UIViewController {
         getUser1(jsonData){ blog in
         println("\(blog)")
         }
-        
+//
         getBlog6(jsonData ){ result in
             switch result {
             case let .Error(err):
@@ -33,7 +33,8 @@ class ViewController: UIViewController {
             }
         }
 */
-        getBlog7(jsonData ){ result in
+//
+        getBlog9(jsonData ){ result in
             for res: Result<Blog> in result {
                 switch res {
                 case let .Error(err):
@@ -44,6 +45,7 @@ class ViewController: UIViewController {
             }
         }
 //
+        
     }
     
 }
