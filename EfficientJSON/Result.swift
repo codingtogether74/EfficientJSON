@@ -11,43 +11,43 @@
 
 import Foundation
 
-public enum Result<V> {
+final class Box<A> {
+    let value: A
+    
+    init(_ value: A) {
+        self.value = value
+    }
+}
+
+enum Result<A> {
     case Error(NSError)
-    case Value(Box<V>)
-    
-    public init(_ e: NSError?, _ v: V) {
-        if let ex = e {
-            self = Result.Error(ex)
-        } else {
-            self = Result.Value(Box(v))
+    case Value(Box<A>)
+    var description : String {
+        get {
+            switch self{
+            case let .Error(err):
+                return "\(err.localizedDescription)"
+            case let .Value(box):
+                return "\(box.value)"
+            }
         }
     }
+    
 
-    public func fold<B>(value: B, f: V -> B) -> B {
+    
+    func flatMap<B>(f:A -> Result<B>) -> Result<B> {
         switch self {
-        case Error(_): return value
-        case let Value(v): return f(v.value)
+        case .Value(let v): return f(v.value)
+        case .Error(let error): return .Error(error)
         }
     }
     
-    public static func error(e: NSError) -> Result<V> {
-        return .Error(e)
-    }
     
-    public static func value(v: V) -> Result<V> {
-        return .Value(Box(v))
+    init(_ error: NSError?, _ value: A) {
+        if let err = error {
+            self = .Error(err)
+        } else {
+            self = .Value(Box(value))
+        }
     }
-}
-
-// Equatable
-public func ==<V: Equatable>(lhs: Result<V>, rhs: Result<V>) -> Bool {
-    switch (lhs, rhs) {
-    case let (.Error(l), .Error(r)) where l == r: return true
-    case let (.Value(l), .Value(r)) where l.value == r.value: return true
-    default: return false
-    }
-}
-
-public func !=<V: Equatable>(lhs: Result<V>, rhs: Result<V>) -> Bool {
-    return !(lhs == rhs)
 }
