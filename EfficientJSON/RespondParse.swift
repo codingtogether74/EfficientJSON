@@ -28,7 +28,7 @@ func performRequest<A: JSONDecodable>(request: NSURLRequest, callback: (Result<A
 func parseResult<A: JSONDecodable>(data: NSData!, urlResponse: NSURLResponse!, error: NSError!) -> Result<A> {
     let responseResult: Result<Response> = Result(error, Response(data: data, urlResponse: urlResponse))
     return responseResult >>> parseResponse
-        >>> decodeJSON1
+        >>> decodeJSON
         >>> decodeObject
 }
 

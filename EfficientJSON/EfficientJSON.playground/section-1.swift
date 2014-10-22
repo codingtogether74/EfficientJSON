@@ -2,6 +2,7 @@
 
 import Foundation
 
+//---- по статье http://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics
 
 /*let parsedJSON : [String:AnyObject] = [
     "id": 1,
@@ -300,7 +301,7 @@ func resultFromOptional<A>(optional: A?, error: NSError) -> Result<A> {
     }
 }
 
-func decodeJSON1(data: NSData) -> Result<JSON> {
+func decodeJSON(data: NSData) -> Result<JSON> {
 let jsonOptional: JSON! = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(0), error: nil)
 return resultFromOptional(jsonOptional, NSError(localizedDescription: "исходные данные неверны")) // use the error from NSJSONSerialization or a custom error message
 }
@@ -340,7 +341,7 @@ extension User {
 
 func getUser4(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
     let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
-    let user: ()? = jsonResult >>> decodeJSON1
+    let user: ()? = jsonResult >>> decodeJSON
                                    >>> User.decode >>> callback
 }
 
@@ -368,11 +369,11 @@ getUser4(jsonData4){ user in
 //========================== Используем Generic =====
 
 protocol JSONDecodable {
-    class func decode1(json: JSON) -> Self?
+    class func decode(json: JSON) -> Self?
 }
 
 func decodeObject<A: JSONDecodable>(json: JSON) -> Result<A> {
-    return resultFromOptional(A.decode1(json), NSError(localizedDescription: "Отсутствуют компоненты User1")) // custom error
+    return resultFromOptional(A.decode(json), NSError(localizedDescription: "Отсутствуют компоненты User1")) // custom error
 }
 
 struct User1: JSONDecodable, Printable {
@@ -387,7 +388,7 @@ struct User1: JSONDecodable, Printable {
         return User1(id: id, name: name, email: email)
     }
 
-    static func decode1(json: JSON) -> User1? {
+    static func decode(json: JSON) -> User1? {
         return JSONObject(json) >>> { d in
             User1.create <^>
                 d["id"]    >>> JSONInt    <*>
@@ -396,6 +397,16 @@ struct User1: JSONDecodable, Printable {
         }
     }
     
+    static func decode(json: JSON) -> Result<User1> {
+        let user1 = JSONObject(json) >>> { dict in
+            User1.create <^>
+                dict["id"]    >>> JSONInt    <*>
+                dict["name"]  >>> JSONString <*>
+                dict["email"] >>> JSONString
+        }
+        return resultFromOptional(user1, NSError(localizedDescription: "Отсутствуют компоненты User")) // custom error message
+    }
+
     static func stringResult(result: Result<User1> ) -> String {
         switch result {
         case let .Error(err):
@@ -407,7 +418,7 @@ struct User1: JSONDecodable, Printable {
 }
 func getUser5(jsonOptional: NSData?, callback: (Result<User1>) -> ()) {
     let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
-    let user: ()? = jsonResult >>> decodeJSON1 >>> decodeObject >>> callback
+    let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
 }
 
 //      ----- Тест 1 - правильные данные -----
@@ -430,4 +441,3 @@ getUser5(jsonData4){ user in
     let a = User1.stringResult(user)
     println("\(a)")
 }
-

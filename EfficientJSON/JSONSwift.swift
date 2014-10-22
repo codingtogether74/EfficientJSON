@@ -19,7 +19,7 @@ func dictionary(input: JSONDictionary, key: String) ->  JSONDictionary? {
 }
 
 func array(input: JSONDictionary, key: String) ->  JSONArray? {
-    return input[key] >>> { $0 as?  JSONArray}                     //[JSON]
+    return input[key] >>> { $0 as?  JSONArray}                     
 }
 
 func JSONString(object: JSON) -> String? {
@@ -40,20 +40,34 @@ func JSONObject(object: JSON) -> JSONDictionary? {
 func JSONCollection(object: JSON) -> JSONArray? {
     return object as? JSONArray
 }
+//------------------------------
 
-func join<A>(elements: [A?]) -> [A]? {
-    var result : [A] = []
-    for element in elements {
-        if let x = element {
-            result.append(x)
-        } else {
-            return nil
+public func flatten<A>(array: [A?]) -> [A] {
+    var list: [A] = []
+    for item in array {
+        if let i = item {
+            list.append(i)
         }
     }
-    return result
+    return list
 }
 
-// operators
+public func pure<A>(a: A) -> A? {
+    return .Some(a)
+}
+
+func _JSONParse<A>(json: JSON) -> A? {
+    return json as? A
+}
+
+func extract<A>(json: JSONDictionary, key: String) -> A? {
+    return json[key] >>> _JSONParse
+}
+
+func extractPure<A>(json: JSONDictionary, key: String) -> A?? {
+    return pure(json[key] >>> _JSONParse)
+}
+// ----------------operators
 
 infix operator >>> { associativity left precedence 150 }
 
@@ -84,15 +98,7 @@ public func <^><A, B>(f: A -> B, a: A?) -> B? {
         return .None
     }
 }
-/*
-func <^><A, B>(f: A -> B?, a: A?) -> B? {
-    if let x = a {
-        return f(x)
-    } else {
-        return .None
-    }
-}
-*/
+
 func <*><A, B>(f: (A -> B)?, a: A?) -> B? {
     if let x = a {
         if let fx = f {
@@ -143,9 +149,9 @@ func decodeJSON(data: NSData?) -> JSON? {
 
 //------------------ Для Result<JSON> -----
 
-func decodeJSON1(data: NSData) -> Result<JSON> {
+func decodeJSON(data: NSData) -> Result<JSON> {
     let jsonOptional: JSON! = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(0), error: nil)
-    
+//    println(jsonOptional)
     return resultFromOptional(jsonOptional, NSError(localizedDescription: "исходные данные неверны")) // use the error from NSJSONSerialization or a custom error message
 }
 //------------------------------------------

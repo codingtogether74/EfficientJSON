@@ -7,6 +7,7 @@
 //
 
 import Foundation
+
 struct Place: Printable {
     let placeURL: String
     let timeZone: String
@@ -31,14 +32,14 @@ struct Place: Printable {
         }
     }
     
-    static func decode1(json: JSON) -> Place? {
+    static func decode1(json: JSON) -> Place? {  //--------------------decode1
         return  JSONObject(json) >>> { d in
 
             Place.create <^>
-                json["place_url"] >>> JSONString <*>
-                json["timezone"]  >>> JSONString <*>
-                json["photo_count"] >>> JSONString <*>
-                json["_content"] >>> JSONString
+                d["place_url"] >>> JSONString <*>
+                d["timezone"]  >>> JSONString <*>
+                d["photo_count"] >>> JSONString <*>
+                d["_content"] >>> JSONString
         }
     }
 }
@@ -48,12 +49,7 @@ struct Place: Printable {
     return  json  >>> JSONObject >>> {
         dictionary ($0,"places") >>> {
             array($0, "place") >>> {
-                join($0.map(Place.decode1) )}}}
-}
-
-func decodeResultPlaces(json: JSON) -> Result<[Place]> {
-    let places:[Place]? = decodeObjectPlaces(json)
-     return resultFromOptional(places, NSError()) // custom error message
+                flatten($0.map(Place.decode1) )}}}
 }
 
 // ----Структура Places ----
@@ -77,11 +73,11 @@ struct Places: Printable,JSONDecodable {
         return Places(places1: places)
     }
     
-    static func decode1(json: JSON) -> Places? {
+    static func decode1(json: JSON) -> Places? {     //---------------decode1
         return create <*> JSONObject(json) >>> {
             dictionary ($0,"places") >>> {
                 array($0, "place") >>> {
-                    join($0.map(Place.decode1) )}}}
+                    flatten($0.map(Place.decode1) )}}}   //-----------------decode1
 
     }
     

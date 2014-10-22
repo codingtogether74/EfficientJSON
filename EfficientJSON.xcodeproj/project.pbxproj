@@ -31,6 +31,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E447329F19F6A86100B14C7D /* EfficientJSONRealLife.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = EfficientJSONRealLife.playground; sourceTree = "<group>"; };
 		E451D6FD19EEB9130091FAD4 /* Place.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Place.swift; sourceTree = "<group>"; };
 		E45619151993A1DC00A38730 /* EfficientJSON.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EfficientJSON.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E45619191993A1DC00A38730 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -68,6 +69,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E44732A019F6A87A00B14C7D /* Playgrounds */ = {
+			isa = PBXGroup;
+			children = (
+				E447329F19F6A86100B14C7D /* EfficientJSONRealLife.playground */,
+				E474FEB019EBF2EE00FDACAB /* EfficientJSON.playground */,
+				E49CBC0619EC0DB200253340 /* EfficientJSONBLOG.playground */,
+			);
+			name = Playgrounds;
+			sourceTree = "<group>";
+		};
 		E456190C1993A1DC00A38730 = {
 			isa = PBXGroup;
 			children = (
@@ -89,15 +100,12 @@
 		E45619171993A1DC00A38730 /* EfficientJSON */ = {
 			isa = PBXGroup;
 			children = (
+				E44732A019F6A87A00B14C7D /* Playgrounds */,
 				E456191C1993A1DC00A38730 /* ViewController.swift */,
-				E474FEB019EBF2EE00FDACAB /* EfficientJSON.playground */,
-				E49CBC0619EC0DB200253340 /* EfficientJSONBLOG.playground */,
 				E45619371993A20C00A38730 /* JSONSwift.swift */,
-				E4BF2D1419EFB98F00E4FC48 /* Blog.swift */,
-				E451D6FD19EEB9130091FAD4 /* Place.swift */,
-				E4BF2D1219EFA3F800E4FC48 /* RespondParse.swift */,
-				E474FEB119EBFE4200FDACAB /* User.swift */,
 				E4D8C8B01998E37E00546F77 /* Result.swift */,
+				E4BF2D1219EFA3F800E4FC48 /* RespondParse.swift */,
+				E45F95F319F5851200EEC199 /* Models */,
 				E456191E1993A1DC00A38730 /* Main.storyboard */,
 				E45619211993A1DC00A38730 /* Images.xcassets */,
 				E45619181993A1DC00A38730 /* Supporting Files */,
@@ -129,6 +137,16 @@
 				E456192C1993A1DC00A38730 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E45F95F319F5851200EEC199 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E474FEB119EBFE4200FDACAB /* User.swift */,
+				E4BF2D1419EFB98F00E4FC48 /* Blog.swift */,
+				E451D6FD19EEB9130091FAD4 /* Place.swift */,
+			);
+			name = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
