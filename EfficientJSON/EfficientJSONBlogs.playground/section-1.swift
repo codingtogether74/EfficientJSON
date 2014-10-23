@@ -11,8 +11,8 @@ let parsedJSON : [String:AnyObject] =
 "id": 5,
 "text": "This is a post.",
 "author": {
-            "id": 1,
-            "name": "Cool User"
+"id": 1,
+"name": "Cool User"
 }
 }*/
 
@@ -216,54 +216,6 @@ func <|*<A: JSONDecodable>(d: JSONObject, key: String) -> A?? {
     return pure(d <| key)
 }
 
-//~~~~~~~~~~~~~~~~ МОДЕЛЬ Post ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-struct Post: JSONDecodable, Printable {
-    let id: Int
-    let text: String
-    let authorName: String
-    
-    
-    var description : String {
-        return "Post { id = \(id), text = \(text), authorName = \(authorName)}"
-    }
-    
-    static func create(id: Int)(text: String)(authorName: String) -> Post {
-        return Post(id: id, text: text, authorName: authorName)
-    }
-    
-    
-    static func decode1(json: JSON) -> Post? {
-        return _JSONParse(json) >>> { d in
-            Post.create
-                <^> d <|  "id"
-                <*> d <|  "text"
-                <*> d <|  "author" <| "name"
-        }
-    }
-//---   Функция для печати на Playground ----
-    
-    static func stringResult(result: Result<Post> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
-}
-
-//~~~~~~~~~~~~~~~~~~ ПАРСИНГ структуры Post~~~~~~~~~~~~~~~~~~~~~~~~~
-
-func getPost(jsonOptional: NSData?, callback: (Result<Post>) -> ()) {
-    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
-    let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
-}
-//      ----- Тест 1 - правильные данные -----
-
-getPost(jsonData){ user in
-    let a = Post.stringResult(user)
-    println("\(a)")
-}
 /*
 //--------------- Comment ------
 let parsedJSON1 : [String:AnyObject] =
@@ -271,9 +223,9 @@ let parsedJSON1 : [String:AnyObject] =
 "id": 6,
 "text": "Cool story bro.",
 "author": {
-            "id": 1,
-            "name": "Cool User"
-          }
+"id": 1,
+"name": "Cool User"
+}
 }
 */
 //~~~~~~~~~~~~~~~~ МОДЕЛЬ Comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -301,7 +253,7 @@ struct Comment: JSONDecodable, Printable {
                 <*> d <|  "author" <| "name"
         }
     }
-//---   Функция для печати на Playground ----
+    //---   Функция для печати на Playground ----
     
     static func stringResult(result: Result<Comment> ) -> String {
         switch result {
@@ -324,32 +276,71 @@ getComment(jsonData){ user in
     let a = Comment.stringResult(user)
     println("\(a)")
 }
-//--------------- User ------------------
-struct User: JSONDecodable {
+
+//~~~~~~~~~~~~ BLOGS ~~~~~~~~~~~~~~~~~~
+// Данные как в статье Cris Eidnof http://chris.eidhof.nl/posts/json-parsing-in-swift.html
+
+/*
+let parsedJSON : [String:AnyObject] = [
+"stat": "ok",
+"blogs": [
+"blog": [
+[
+"id" : 73,
+"name" : "Bloxus test",
+"needspassword" : true,
+"url" : "http://remote.bloxus.com/"
+],
+[
+"id" : 74,
+"name" : "Manila Test",
+"needspassword" : false,
+"url" : "http://flickrtest1.userland.com/"
+]
+]
+]
+]
+*/
+//~~~~~~~~~~~~~~~~~~~~~ корректные ДАННЫЕ ~~~~~~~~~~~~~~~~~~~~~~~
+
+var jsonString1 = "{ \"stat\": \"ok\", \"blogs\":  [ { \"id\" : 73, \"name\" : \"Bloxus test\", \"needspassword\" : true, \"url\" : \"http://remote.bloxus.com/\" }, { \"id\" : 74, \"name\" : \"Manila Test\", \"needspassword\" : false, \"url\" : \"http://flickrtest1.userland.com/\" } ]  }"
+let jsonData1 = jsonString1.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
+
+//~~~~~~~~~~~~~~~~~~~~~~~  МОДЕЛЬ одного Blog ~~~~~~~~~~~~~~~
+//---------------------- String --> NSURL--------
+func toURL(urlString: String) -> NSURL {
+    return NSURL(string: urlString)!
+}
+// ----------------------Структура Blog -----------
+
+struct Blog: Printable,JSONDecodable  {
     let id: Int
     let name: String
-    let email: String?
+    let needsPassword : Int
+    let url: NSURL
     
-    var description : String {
-        return "User { id = \(id), name = \(name), email = \(email)}"
-    }
-
-    static func create(id: Int)(name: String)(email: String?) -> User {
-        return User(id: id, name: name, email: email)
+    var description : String { get {
+        return "Blog { id = \(id), name = \(name), needsPassword = \(needsPassword), url = \(url)}"
+        }}
+    
+    static func create(id: Int)(name: String)(needsPassword: Int)(url:String) -> Blog {
+        return Blog(id: id, name: name, needsPassword: needsPassword, url: toURL(url))
     }
     
-    static func decode1(json: JSON) -> User? {
+    
+    static func decode1(json: JSON) -> Blog? {
         return _JSONParse(json) >>> { d in
-            User.create
-                <^> d <|  "id"
-                <*> d <|  "name"
-                <*> d <|* "email"
-
+            Blog.create
+                <^> d <| "id"
+                <*> d <| "name"
+                <*> d <| "needspassword"
+                <*> d <| "url"
         }
     }
+
     //---   Функция для печати на Playground ----
     
-    static func stringResult(result: Result<User> ) -> String {
+    static func stringResult(result: Result<Blog> ) -> String {
         switch result {
         case let .Error(err):
             return "\(err.localizedDescription)"
@@ -358,58 +349,36 @@ struct User: JSONDecodable {
         }
     }
 }
-//  -------------- ДАННЫЕ ----------------------
 
-//let jsonString3: String =  "{ \"id\": 1, \"name\":\"Cool user\" }"
-let jsonString3: String = "{ \"id\": 1, \"name\":\"Cool user\",  \"email\": \"u.cool@example.com\" }"
+//-------------------- МОДЕЛЬ массива блогов--------
+// ----------------------Структура Blogs -----------
 
-let jsonData3: NSData? = jsonString3.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
-
-//      ----- Тест User -----
-
-func getUser(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
-    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
-    let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
-}
-getUser(jsonData3){ user in
-    let a = User.stringResult(user)
-    println("\(a)")
-}
-
-//~~~~~~~~~~~~~~~~ МОДЕЛЬ Post1 с Comments ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-//      -----------------ДАННЫЕ-------------
-let jsonString5: String = "{\"id\": 3, \"text\": \"A Cool story.\",\"author\": {\"id\": 1,\"name\": \"Cool User\"},\"comments\": [{\"id\": 6,\"text\": \"Cool story bro.\",\"author\": {\"id\": 1,\"name\": \"Cool User\"}},{\"id\": 6,\"text\": \"Cool story bro.\",\"author\": {\"id\": 1,\"name\": \"Cool User\"}}]}"
-
-let jsonData5: NSData? = jsonString5.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
-//--------------- Post1 ------------------
-
-struct Post1: JSONDecodable {
-    let id: Int
-    let text: String
-    let author: User
+struct Blogs: Printable,JSONDecodable {
     
-    var description : String {
-        return "Post1 { id = \(id), text = \(text), author = \(author.description)}"
+    var blogs : [Blog]
+    
+    var description :String  { get {
+        var str: String = "Blogs :"
+        for blog in self.blogs {
+            str = str +  "\(blog.description) \n"
+        }
+        return str
+        }
     }
     
-    
-    
-    static func create(id: Int)(text: String)(author: User)-> Post1 {
-        return Post1(id: id, text: text, author: author)
+    static func create(blogs: [Blog]) -> Blogs {
+        return Blogs(blogs: blogs)
     }
     
-    static func decode1(json: JSON) -> Post1? {
+    static func decode1(json: JSON) -> Blogs? {
         return _JSONParse(json) >>> { d in
-            Post1.create
-                <^> d <| "id"
-                <*> d <| "text"
-                <*> d <| "author"
+            Blogs.create
+                <^> d <| "blogs"
+
         }
     }
-//---   Функция для печати на Playground ----
     
-    static func stringResult(result: Result<Post1> ) -> String {
+    static func stringResult(result: Result<Blogs> ) -> String {
         switch result {
         case let .Error(err):
             return "\(err.localizedDescription)"
@@ -418,96 +387,14 @@ struct Post1: JSONDecodable {
         }
     }
 }
+// ---- Конец структуры Blogs----
 //------------ Тест Post1 -----
 
-func getPost1(jsonOptional: NSData?, callback: (Result<Post1>) -> ()) {
+func getBlogs(jsonOptional: NSData?, callback: (Result<Blogs>) -> ()) {
     let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
     let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
 }
-getPost1(jsonData5){ user in
-    let a = Post1.stringResult(user)
+getBlogs(jsonData1){ user in
+    let a = Blogs.stringResult(user)
     println("\(a)")
 }
-/* ---------- Post2  c Comments -------------------
-let parsedJSON : [String:AnyObject] =
-{
-    "id": 3,
-    "text": "A Cool story.",
-    "author": {
-                "id": 1,
-                "name": "Cool User"
-               },
-    "comments": [
-                  {
-                    "id": 6,
-                    "text": "Cool story bro.",
-                    "author": {
-                                "id": 1,
-                                "name": "Cool User"
-                               }
-                  },
-                 {
-                    "id": 6,
-                    "text": "Cool story bro.",
-                    "author": {
-                                "id": 1,
-                                "name": "Cool User"
-                              }
-                 }
-                ]
-}
-*/
-//~~~~~~~~~~~~~~~ Post2 ~~~~~~~~~~~~~~~~~~~
-
-struct Post2: JSONDecodable {
-    let id: Int
-    let text: String
-    let author: User
-    let comments: [Comment]
-
-
-    var description : String {
-        var str: String = ""
-        for comment in self.comments {
-            str = str +  "\(comment.description) \n"
-        }
-        return "Post2 { id = \(id), text = \(text), author = \(author.description)}" + str
-    }
-    
-    
-    
-    static func create(id: Int)(text: String)(author: User)(comments: [Comment]) -> Post2 {
-        return Post2(id: id, text: text, author: author, comments: comments)
-    }
-    
-    static func decode1(json: JSON) -> Post2? {
-        return _JSONParse(json) >>> { d in
-            Post2.create
-                <^> d <| "id"
-                <*> d <| "text"
-                <*> d <| "author"
-                <*> d <| "comments"
-        }
-    }
-    //---   Функция для печати на Playground ----
-    
-    static func stringResult(result: Result<Post2> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
-}
-//------------ Тест Post1 -----
-
-func getPost2(jsonOptional: NSData?, callback: (Result<Post2>) -> ()) {
-    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
-    let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
-}
-getPost2(jsonData5){ user in
-    let a = Post2.stringResult(user)
-    println("\(a)")
-}
-

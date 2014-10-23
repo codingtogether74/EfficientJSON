@@ -49,6 +49,7 @@
 		E49CBC0619EC0DB200253340 /* EfficientJSONBLOG.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = EfficientJSONBLOG.playground; sourceTree = "<group>"; };
 		E4BF2D1219EFA3F800E4FC48 /* RespondParse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RespondParse.swift; sourceTree = "<group>"; };
 		E4BF2D1419EFB98F00E4FC48 /* Blog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog.swift; sourceTree = "<group>"; };
+		E4CE367C19F96B3700D95C53 /* EfficientJSONBlogs.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = EfficientJSONBlogs.playground; sourceTree = "<group>"; };
 		E4D8C8B01998E37E00546F77 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -73,6 +74,7 @@
 		E44732A019F6A87A00B14C7D /* Playgrounds */ = {
 			isa = PBXGroup;
 			children = (
+				E4CE367C19F96B3700D95C53 /* EfficientJSONBlogs.playground */,
 				E447329F19F6A86100B14C7D /* EfficientJSONRealLife.playground */,
 				E408AB4E19F7DFD700AB4CF9 /* EffisientJSONEmbeddedANDArrays.playground */,
 				E474FEB019EBF2EE00FDACAB /* EfficientJSON.playground */,
