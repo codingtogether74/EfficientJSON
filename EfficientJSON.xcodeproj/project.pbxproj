@@ -31,6 +31,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E408AB4E19F7DFD700AB4CF9 /* EffisientJSONEmbeddedANDArrays.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = EffisientJSONEmbeddedANDArrays.playground; sourceTree = "<group>"; };
 		E447329F19F6A86100B14C7D /* EfficientJSONRealLife.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = EfficientJSONRealLife.playground; sourceTree = "<group>"; };
 		E451D6FD19EEB9130091FAD4 /* Place.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Place.swift; sourceTree = "<group>"; };
 		E45619151993A1DC00A38730 /* EfficientJSON.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EfficientJSON.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				E447329F19F6A86100B14C7D /* EfficientJSONRealLife.playground */,
+				E408AB4E19F7DFD700AB4CF9 /* EffisientJSONEmbeddedANDArrays.playground */,
 				E474FEB019EBF2EE00FDACAB /* EfficientJSON.playground */,
 				E49CBC0619EC0DB200253340 /* EfficientJSONBLOG.playground */,
 			);
