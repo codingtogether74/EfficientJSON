@@ -55,7 +55,7 @@ typealias JSONDictionary = Dictionary<String, JSON>
 typealias JSONArray = Array<JSON>
 
 
-//---------- ОПЕРАТОРЫ функцилнального программирования >>>  <^>   и  <*>  ---
+//---------- ОПЕРАТОРЫ функционального программирования >>>  <^>   и  <*>  ---
 infix operator >>> { associativity left precedence 150 } // Bind
 infix operator <^> { associativity left } // Functor's fmap (usually <$>)
 infix operator <*> { associativity left } // Applicative's apply
@@ -156,12 +156,26 @@ func decodeJSON(data: NSData?) -> JSON? {
 }
 //--------------------- Оператор >>> для Result---
 
+
 func >>><A, B>(a: Result<A>, f: A -> Result<B>) -> Result<B> {
     switch a {
     case let .Value(x):     return f(x.value)
     case let .Error(error): return .Error(error)
     }
 }
+
+//--------------- Для печати Result ---
+
+
+ func stringResult<A:Printable>(result: Result<A> ) -> String {
+    switch result {
+    case let .Error(err):
+        return "\(err.localizedDescription)"
+    case let .Value(box):
+        return "\(box.value.description)"
+    }
+}
+
 //~~~~~~~~~ДОБАВЛЯЕМ ФУНКЦИИ  ~~~~~~~~~~~~~~~~~~~
 //------- flatten функцию ---
 func flatten<A>(array: [A?]) -> [A] {
@@ -285,14 +299,6 @@ struct User: JSONDecodable, Printable {
             }
     }
 */
-    static func stringResult(result: Result<User> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
 }
 
 //~~~~~~~~~~~~~~~~~~ User ПАРСИНГ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -305,28 +311,28 @@ func getUser5(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
 //      ----- Тест 1 - правильные данные -----
 
 getUser5(jsonData){ user in
-    let a = User.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 
 //      ----- Тест 2 - неправильные данные (лишняя фигурная скобка) -----
 
 getUser5(jsonData1){ user in
-    let a = User.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 
 //      ----- Тест 3 - неправильные данные ( вместо "id" "id1") -----
 
 getUser5(jsonData2){ user in
-    let a = User.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 //      ----- Тест 4 - отсутствует email в JSON данных -----
 
 getUser5(jsonData3){ user in
-//    let a = User.stringResult(user)
-    println("email нет в JSON \(user.description)")
+    let a = stringResult(user)
+    println("\(a)")
     return
 }
 

@@ -92,6 +92,17 @@ enum Result<A> {
         }
     }
 }
+//--------------- Для печати Result ---
+
+
+func stringResult<A:Printable>(result: Result<A> ) -> String {
+    switch result {
+    case let .Error(err):
+        return "\(err.localizedDescription)"
+    case let .Value(box):
+        return "\(box.value.description)"
+    }
+}
 //-----------------------------от Optional к  Result<A> ---------
 
 func resultFromOptional<A>(optional: A?, error: NSError) -> Result<A> {
@@ -240,16 +251,6 @@ struct Post: JSONDecodable, Printable {
                 <*> d <|  "author" <| "name"
         }
     }
-//---   Функция для печати на Playground ----
-    
-    static func stringResult(result: Result<Post> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
 }
 
 //~~~~~~~~~~~~~~~~~~ ПАРСИНГ структуры Post~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -261,7 +262,7 @@ func getPost(jsonOptional: NSData?, callback: (Result<Post>) -> ()) {
 //      ----- Тест 1 - правильные данные -----
 
 getPost(jsonData){ user in
-    let a = Post.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 /*
@@ -301,16 +302,6 @@ struct Comment: JSONDecodable, Printable {
                 <*> d <|  "author" <| "name"
         }
     }
-//---   Функция для печати на Playground ----
-    
-    static func stringResult(result: Result<Comment> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
 }
 //~~~~~~~~~~~~~~~~~~ ПАРСИНГ структуры Comment~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -321,11 +312,11 @@ func getComment(jsonOptional: NSData?, callback: (Result<Comment>) -> ()) {
 //      ----- Тест 1 - правильные данные -----
 
 getComment(jsonData){ user in
-    let a = Comment.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 //--------------- User ------------------
-struct User: JSONDecodable {
+struct User: JSONDecodable, Printable {
     let id: Int
     let name: String
     let email: String?
@@ -347,16 +338,6 @@ struct User: JSONDecodable {
 
         }
     }
-    //---   Функция для печати на Playground ----
-    
-    static func stringResult(result: Result<User> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
 }
 //  -------------- ДАННЫЕ ----------------------
 
@@ -372,7 +353,7 @@ func getUser(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
     let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
 }
 getUser(jsonData3){ user in
-    let a = User.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 
@@ -384,7 +365,7 @@ let jsonString5: String = "{\"id\": 3, \"text\": \"A Cool story.\",\"author\": {
 let jsonData5: NSData? = jsonString5.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
 //--------------- Post1 ------------------
 
-struct Post1: JSONDecodable {
+struct Post1: JSONDecodable, Printable {
     let id: Int
     let text: String
     let author: User
@@ -407,16 +388,6 @@ struct Post1: JSONDecodable {
                 <*> d <| "author"
         }
     }
-//---   Функция для печати на Playground ----
-    
-    static func stringResult(result: Result<Post1> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
 }
 //------------ Тест Post1 -----
 
@@ -425,7 +396,7 @@ func getPost1(jsonOptional: NSData?, callback: (Result<Post1>) -> ()) {
     let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
 }
 getPost1(jsonData5){ user in
-    let a = Post1.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 /* ---------- Post2  c Comments -------------------
@@ -459,7 +430,7 @@ let parsedJSON : [String:AnyObject] =
 */
 //~~~~~~~~~~~~~~~ Post2 ~~~~~~~~~~~~~~~~~~~
 
-struct Post2: JSONDecodable {
+struct Post2: JSONDecodable, Printable {
     let id: Int
     let text: String
     let author: User
@@ -489,16 +460,6 @@ struct Post2: JSONDecodable {
                 <*> d <| "comments"
         }
     }
-    //---   Функция для печати на Playground ----
-    
-    static func stringResult(result: Result<Post2> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
 }
 //------------ Тест Post1 -----
 
@@ -507,7 +468,7 @@ func getPost2(jsonOptional: NSData?, callback: (Result<Post2>) -> ()) {
     let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
 }
 getPost2(jsonData5){ user in
-    let a = Post2.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 

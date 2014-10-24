@@ -92,6 +92,17 @@ enum Result<A> {
         }
     }
 }
+//--------------- Для печати Result ---
+
+
+func stringResult<A:Printable>(result: Result<A> ) -> String {
+    switch result {
+    case let .Error(err):
+        return "\(err.localizedDescription)"
+    case let .Value(box):
+        return "\(box.value.description)"
+    }
+}
 //-----------------------------от Optional к  Result<A> ---------
 
 func resultFromOptional<A>(optional: A?, error: NSError) -> Result<A> {
@@ -216,67 +227,6 @@ func <|*<A: JSONDecodable>(d: JSONObject, key: String) -> A?? {
     return pure(d <| key)
 }
 
-/*
-//--------------- Comment ------
-let parsedJSON1 : [String:AnyObject] =
-{
-"id": 6,
-"text": "Cool story bro.",
-"author": {
-"id": 1,
-"name": "Cool User"
-}
-}
-*/
-//~~~~~~~~~~~~~~~~ МОДЕЛЬ Comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-struct Comment: JSONDecodable, Printable {
-    let id: Int
-    let text: String
-    let authorName: String
-    
-    
-    var description : String {
-        return "Comment { id = \(id), text = \(text), authorName = \(authorName)}"
-    }
-    
-    static func create(id: Int)(text: String)(authorName: String) -> Comment {
-        return Comment(id: id, text: text, authorName: authorName)
-    }
-    
-    
-    static func decode1(json: JSON) -> Comment? {
-        return _JSONParse(json) >>> { d in
-            Comment.create
-                <^> d <|  "id"
-                <*> d <|  "text"
-                <*> d <|  "author" <| "name"
-        }
-    }
-    //---   Функция для печати на Playground ----
-    
-    static func stringResult(result: Result<Comment> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
-}
-//~~~~~~~~~~~~~~~~~~ ПАРСИНГ структуры Comment~~~~~~~~~~~~~~~~~~~~~~~~~
-
-func getComment(jsonOptional: NSData?, callback: (Result<Comment>) -> ()) {
-    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
-    let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
-}
-//      ----- Тест 1 - правильные данные -----
-
-getComment(jsonData){ user in
-    let a = Comment.stringResult(user)
-    println("\(a)")
-}
-
 //~~~~~~~~~~~~ BLOGS ~~~~~~~~~~~~~~~~~~
 // Данные как в статье Cris Eidnof http://chris.eidhof.nl/posts/json-parsing-in-swift.html
 
@@ -337,17 +287,6 @@ struct Blog: Printable,JSONDecodable  {
                 <*> d <| "url"
         }
     }
-
-    //---   Функция для печати на Playground ----
-    
-    static func stringResult(result: Result<Blog> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
 }
 
 //-------------------- МОДЕЛЬ массива блогов--------
@@ -377,24 +316,15 @@ struct Blogs: Printable,JSONDecodable {
 
         }
     }
-    
-    static func stringResult(result: Result<Blogs> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
 }
 // ---- Конец структуры Blogs----
-//------------ Тест Post1 -----
+//------------ Тест Blogs -----
 
 func getBlogs(jsonOptional: NSData?, callback: (Result<Blogs>) -> ()) {
     let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
     let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
 }
 getBlogs(jsonData1){ user in
-    let a = Blogs.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }

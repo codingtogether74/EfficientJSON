@@ -20,7 +20,7 @@ struct Response {
 }
 func performRequest<A: JSONDecodable>(request: NSURLRequest, callback: (Result<A>) -> ()) {
     let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { data, urlResponse, error in
-        callback(parseResult(data, urlResponse, error))
+       callback( parseResult(data, urlResponse, error))
     }
     task.resume()
 }
@@ -28,8 +28,8 @@ func performRequest<A: JSONDecodable>(request: NSURLRequest, callback: (Result<A
 func parseResult<A: JSONDecodable>(data: NSData!, urlResponse: NSURLResponse!, error: NSError!) -> Result<A> {
     let responseResult: Result<Response> = Result(error, Response(data: data, urlResponse: urlResponse))
     return responseResult >>> parseResponse
-        >>> decodeJSON
-        >>> decodeObject
+                          >>> decodeJSON
+                          >>> decodeObject
 }
 
 func parseResponse(response: Response) -> Result<NSData> {

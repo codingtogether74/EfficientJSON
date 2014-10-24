@@ -50,10 +50,11 @@ struct Blog: Printable,JSONDecodable {
 
 struct Blogs: Printable,JSONDecodable {
     
-    var blogs : [Blog]?
+    var blogs : [Blog]
+    
     var description :String  { get {
         var str: String = ""
-        for blog in self.blogs! {
+        for blog in self.blogs {
             str = str +  "\(blog) \n"
         }
         return str
@@ -74,7 +75,7 @@ struct Blogs: Printable,JSONDecodable {
                     flatten($0.map(Blog.decode1) )}}}
         
     }
-    
+/*
     static func stringResult(result: Result<Blogs> ) -> String {
         switch result {
         case let .Error(err):
@@ -83,6 +84,7 @@ struct Blogs: Printable,JSONDecodable {
             return "\(box.value.description)"
         }
     }
+*/
 }
 // ---- Конец структуры Blogs----
 
@@ -121,7 +123,6 @@ func getBlog1(jsonOptional: NSData?, callback: (Blog) -> ()) {
     let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional!, options: NSJSONReadingOptions(0), error: &jsonErrorOptional)
     
     if let dict =  jsonObject as? Dictionary<String,AnyObject> {
-        println("\(dict)")
         if let blogs = dict["blogs"] as AnyObject? as? Dictionary<String,AnyObject>   {
             if let blogItems : AnyObject = blogs["blog"] {
                 if let collection = blogItems as? Array<AnyObject> {

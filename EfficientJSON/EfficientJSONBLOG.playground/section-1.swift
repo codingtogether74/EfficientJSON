@@ -231,6 +231,19 @@ enum Result<A> {
         }
     }
 }
+
+//--------------- Для печати Result на Playground ---
+
+
+func stringResult<A:Printable>(result: Result<A> ) -> String {
+    switch result {
+    case let .Error(err):
+        return "\(err.localizedDescription)"
+    case let .Value(box):
+        return "\(box.value.description)"
+    }
+}
+
 //---------------------- String --> NSURL--------
 func toURL(urlString: String) -> NSURL {
     return NSURL(string: urlString)!
@@ -272,16 +285,6 @@ struct Blog: Printable,JSONDecodable  {
                 dict["url"] >>> JSONString
         }
     }
-    
-    static func stringResult(result: Result<Blog> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
-    
 }
 
 //-------------------- МОДЕЛЬ массива блогов--------
@@ -311,15 +314,6 @@ struct Blogs: Printable,JSONDecodable {
             dictionary ($0,"blogs") >>> {
                 array($0, "blog") >>> {flatten($0.map(Blog.decode1))}
             }
-        }
-    }
-    
-    static func stringResult(result: Result<Blogs> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
         }
     }
 }
@@ -411,7 +405,7 @@ func getBlog2(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
 
 println("----- 2:")
 getBlog2(jsonData1 ){ blog in
-    let a = Blog.stringResult(blog)
+    let a = stringResult(blog)
     println(" \(a)")
 }
 
@@ -435,7 +429,7 @@ func getBlog6(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
 
 println("----- 6:")
 getBlog6(jsonData1 ){ blog in
-    let a = Blog.stringResult(blog)
+    let a = stringResult(blog)
     println(" \(a)")
 }
 
@@ -451,7 +445,7 @@ func getBlog11(jsonOptional: NSData?, callback: (Result<Blogs>) -> ()) {
 
 println("----- 11 БЛОГИ:")
 getBlog11(jsonData1 ) { blogs in
-    let a = Blogs.stringResult(blogs)
+    let a = stringResult(blogs)
     println(" \(a)")
 }
 

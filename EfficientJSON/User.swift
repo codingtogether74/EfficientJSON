@@ -42,7 +42,7 @@ struct User1: JSONDecodable, Printable {
         }
         return resultFromOptional(user1, NSError(localizedDescription: "Отсутствуют компоненты User")) // custom error message
     }
-
+/*
     static func stringResult(result: Result<User1> ) -> String {
         switch result {
         case let .Error(err):
@@ -51,6 +51,7 @@ struct User1: JSONDecodable, Printable {
             return "\(box.value.description)"
         }
     }
+*/
 }
 //----------------- МОДЕЛЬ User --------
 
@@ -66,7 +67,7 @@ struct User:  JSONDecodable, Printable {
     static func create(id: Int)(name: String)(email: String?) -> User {
         return User(id: id, name: name, email: email)
     }
-    
+/*
     static func stringResult(result: Result<User> ) -> String {
         switch result {
         case let .Error(err):
@@ -75,7 +76,7 @@ struct User:  JSONDecodable, Printable {
               return "\(box.value.description)"
         }
     }
-    
+*/    
     static func decode1(json: JSON) -> User? {   //------------decode1
         return _JSONParse(json) >>> { d in
             User.create <^>
@@ -142,7 +143,7 @@ struct User2: JSONDecodable, Printable {
         }
         return resultFromOptional(user2, NSError(localizedDescription: "Отсутствуют компоненты User")) // custom error message
     }
-    
+/*
     static func stringResult(result: Result<User2> ) -> String {
         switch result {
         case let .Error(err):
@@ -151,6 +152,7 @@ struct User2: JSONDecodable, Printable {
             return "\(box.value.description)"
         }
     }
+*/
 }
 //-------------------------ФУНКЦИИ ПАРСИНГА------
 func getUser0(jsonOptional: NSData?, callback: (User) -> ()) {

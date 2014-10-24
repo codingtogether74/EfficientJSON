@@ -33,8 +33,9 @@ class ViewController: UIViewController {
 //        getBlog0(jsonData)
 
         let urlPlaces  = NSURLRequest( URL: toURL( "https://api.flickr.com/services/rest/?method=flickr.places.getTopPlacesList&place_type_id=7&format=json&nojsoncallback=1&api_key=2d57c18bb70d5b3aea7b3b0034567af1"))
+        
         performRequest(urlPlaces ) { places in
-                        println("\(Places.stringResult(places))")
+             println("\(Places.stringResult(places))")
         }
 
         getUser0(jsonData1){ user in
@@ -43,18 +44,18 @@ class ViewController: UIViewController {
         }
 
         getUser4(jsonData1 ){ user in
-             println("\(User.stringResult(user))")
+             println("\(stringResult(user))")
         }
         //      ----- Тест 1 User1- правильные данные -----
 
         getUser5(jsonData1){ user1 in
-            let a = User1.stringResult(user1)
+            let a = stringResult(user1)
             println("------ 4--\(a)")
         }
         //      ----- Тест 1 User - правильные данные -----
 
         getUser6(jsonData2){ user in
-            let a = User.stringResult(user)
+            let a = stringResult(user)
             println("User6 ---\(a)")
         }
 
@@ -88,7 +89,7 @@ class ViewController: UIViewController {
             }
         }
         getBlog11(jsonData ) { blogs in
-            println("БЛОГИ: \(Blogs.stringResult(blogs))")
+            println("БЛОГИ: \(stringResult(blogs))")
         }
 
 //

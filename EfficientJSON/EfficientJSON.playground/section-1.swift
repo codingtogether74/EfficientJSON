@@ -95,7 +95,17 @@ enum Result<A> {
         }
     }
 }
+//--------------- Для печати Result на Playground ---
 
+
+func stringResult<A:Printable>(result: Result<A> ) -> String {
+    switch result {
+    case let .Error(err):
+        return "\(err.localizedDescription)"
+    case let .Value(box):
+        return "\(box.value.description)"
+    }
+}
 
 // ------------ Возврат ошибки NSError ----
 // Для упрощения работы с классом NSError создаем "удобный" инициализатор в расширении класса
@@ -130,17 +140,6 @@ func getUser1(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
     callback(.Error(NSError(localizedDescription: "Отсутствуют компоненты User")))
 }
 
-extension User {
-    
-    static func stringResult(result: Result<User> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
-}
 //      ----- Тест 1 - правильные данные -----
 
 let jsonString2: String = "{ \"id\": 1, \"name\":\"Cool user\",  \"email\": \"u.cool@example.com\" }"
@@ -148,7 +147,7 @@ let jsonString2: String = "{ \"id\": 1, \"name\":\"Cool user\",  \"email\": \"u.
 let jsonData2: NSData? = jsonString2.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
 
 getUser1(jsonData2 ){ user in
-    let a = User.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 
@@ -159,7 +158,7 @@ let jsonString3: String = "{ {\"id\": 1, \"name\":\"Cool user\",  \"email\": \"u
 let jsonData3: NSData? = jsonString3.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
 
 getUser1(jsonData3 ){ user in
-    let a = User.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 
 }
@@ -171,7 +170,7 @@ let jsonString4: String = "{ \"id1\": 1, \"name\":\"Cool user\",  \"email\": \"u
 let jsonData4: NSData? = jsonString4.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
 
 getUser1(jsonData4 ){ user in
-    let a = User.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 
@@ -231,7 +230,7 @@ func getUser2(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
 //      ----- Тест 1 - правильные данные -----
 
 getUser2(jsonData){ user in
-    let a = User.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 
@@ -287,7 +286,7 @@ func getUser3(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
 //      ----- Тест 1 - правильные данные -----
 
 getUser3(jsonData){ user in
-    let a = User.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 
@@ -348,21 +347,21 @@ func getUser4(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
 //      ----- Тест 1 - правильные данные -----
 
 getUser4(jsonData){ user in
-let a = User.stringResult(user)
+let a = stringResult(user)
 println("\(a)")
 }
 
 //      ----- Тест 2 - неправильные данные (лишняя фигурная скобка) -----
 
 getUser4(jsonData3){ user in
-    let a = User.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 
 //      ----- Тест 3 - неправильные данные ( вместо "id" "id1") -----
 
 getUser4(jsonData4){ user in
-    let a = User.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 
@@ -373,7 +372,7 @@ protocol JSONDecodable {
 }
 
 func decodeObject<A: JSONDecodable>(json: JSON) -> Result<A> {
-    return resultFromOptional(A.decode(json), NSError(localizedDescription: "Отсутствуют компоненты User1")) // custom error
+    return resultFromOptional(A.decode(json), NSError(localizedDescription: "Отсутствуют компоненты")) // custom error
 }
 
 struct User1: JSONDecodable, Printable {
@@ -406,16 +405,8 @@ struct User1: JSONDecodable, Printable {
         }
         return resultFromOptional(user1, NSError(localizedDescription: "Отсутствуют компоненты User")) // custom error message
     }
-
-    static func stringResult(result: Result<User1> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
 }
+
 func getUser5(jsonOptional: NSData?, callback: (Result<User1>) -> ()) {
     let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
     let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
@@ -424,20 +415,20 @@ func getUser5(jsonOptional: NSData?, callback: (Result<User1>) -> ()) {
 //      ----- Тест 1 - правильные данные -----
 
 getUser5(jsonData){ user1 in
-    let a = User1.stringResult(user1)
+    let a = stringResult(user1)
     println("\(a)")
 }
 
 //      ----- Тест 2 - неправильные данные (лишняя фигурная скобка) -----
 
 getUser5(jsonData3){ user in
-    let a = User1.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }
 
 //      ----- Тест 3 - неправильные данные ( вместо "id" "id1") -----
 
 getUser5(jsonData4){ user in
-    let a = User1.stringResult(user)
+    let a = stringResult(user)
     println("\(a)")
 }

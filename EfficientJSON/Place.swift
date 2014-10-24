@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Place: Printable {
+struct Place: Printable ,JSONDecodable {
     let placeURL: String
     let timeZone: String
     let photoCount : String
@@ -22,16 +22,7 @@ struct Place: Printable {
     static func create(placeURL: String)(timeZone: String)(photoCount: String)(content: String) -> Place {
         return Place(placeURL: placeURL, timeZone: timeZone, photoCount: photoCount,content: content)
     }
-    
-    static func stringResult(result: Result<Place> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
-    
+
     static func decode1(json: JSON) -> Place? {  //--------------------decode1
         return  JSONObject(json) >>> { d in
 
@@ -44,22 +35,23 @@ struct Place: Printable {
     }
 }
 // ---- Конец структуры Place ----
-
+/*
     func decodeObjectPlaces(json: JSON) -> [Place]? {
     return  json  >>> JSONObject >>> {
         dictionary ($0,"places") >>> {
             array($0, "place") >>> {
                 flatten($0.map(Place.decode1) )}}}
 }
-
+*/
 // ----Структура Places ----
 
 struct Places: Printable,JSONDecodable {
     
-    var places : [Place]?
+    var places : [Place]
+    
     var description :String  { get {
         var str: String = ""
-            for place in self.places! {
+            for place in self.places {
              str = str +  "\(place) \n"
             }
           return str
@@ -80,7 +72,7 @@ struct Places: Printable,JSONDecodable {
                     flatten($0.map(Place.decode1) )}}}   //-----------------decode1
 
     }
-    
+
     static func stringResult(result: Result<Places> ) -> String {
         switch result {
         case let .Error(err):
@@ -89,6 +81,7 @@ struct Places: Printable,JSONDecodable {
             return "\(box.value.description)"
         }
     }
+
 }
 // ---- Конец структуры Places----
 
