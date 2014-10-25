@@ -75,16 +75,6 @@ struct Blogs: Printable,JSONDecodable {
                     flatten($0.map(Blog.decode1) )}}}
         
     }
-/*
-    static func stringResult(result: Result<Blogs> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
-*/
 }
 // ---- Конец структуры Blogs----
 

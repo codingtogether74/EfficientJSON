@@ -143,16 +143,6 @@ struct User2: JSONDecodable, Printable {
         }
         return resultFromOptional(user2, NSError(localizedDescription: "Отсутствуют компоненты User")) // custom error message
     }
-/*
-    static func stringResult(result: Result<User2> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
-*/
 }
 //-------------------------ФУНКЦИИ ПАРСИНГА------
 func getUser0(jsonOptional: NSData?, callback: (User) -> ()) {

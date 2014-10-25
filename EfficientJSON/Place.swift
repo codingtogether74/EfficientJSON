@@ -35,14 +35,7 @@ struct Place: Printable ,JSONDecodable {
     }
 }
 // ---- Конец структуры Place ----
-/*
-    func decodeObjectPlaces(json: JSON) -> [Place]? {
-    return  json  >>> JSONObject >>> {
-        dictionary ($0,"places") >>> {
-            array($0, "place") >>> {
-                flatten($0.map(Place.decode1) )}}}
-}
-*/
+
 // ----Структура Places ----
 
 struct Places: Printable,JSONDecodable {
@@ -72,16 +65,6 @@ struct Places: Printable,JSONDecodable {
                     flatten($0.map(Place.decode1) )}}}   //-----------------decode1
 
     }
-
-    static func stringResult(result: Result<Places> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
-
 }
 // ---- Конец структуры Places----
 
