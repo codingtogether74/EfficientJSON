@@ -58,7 +58,7 @@ final class Box<A> {
         }
     }
 }
-//--------------- Для печати Result на Playground ---
+//--------------- For Print Result---
 
 
 func stringResult<A: Printable>(result: Result<A> ) -> String {

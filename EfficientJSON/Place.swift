@@ -8,6 +8,8 @@
 
 import Foundation
 
+//-------------- MODEL Place ----------------
+
 struct Place: Printable ,JSONDecodable {
     let placeURL: String
     let timeZone: String
@@ -23,20 +25,19 @@ struct Place: Printable ,JSONDecodable {
         return Place(placeURL: placeURL, timeZone: timeZone, photoCount: photoCount,content: content)
     }
 
-    static func decode1(json: JSON) -> Place? {  //--------------------decode1
+    static func decode1(json: JSON) -> Place? {
         return  JSONObject(json) >>> { d in
 
             Place.create <^>
-                d["place_url"] >>> JSONString <*>
-                d["timezone"]  >>> JSONString <*>
+                d["place_url"]   >>> JSONString <*>
+                d["timezone"]    >>> JSONString <*>
                 d["photo_count"] >>> JSONString <*>
-                d["_content"] >>> JSONString
+                d["_content"]    >>> JSONString
         }
     }
 }
-// ---- Конец структуры Place ----
 
-// ----Структура Places ----
+//-------------- MODEL Places ----------------
 
 struct Places: Printable,JSONDecodable {
     
@@ -58,13 +59,12 @@ struct Places: Printable,JSONDecodable {
         return Places(places1: places)
     }
     
-    static func decode1(json: JSON) -> Places? {     //---------------decode1
+    static func decode1(json: JSON) -> Places? {    
         return create <*> JSONObject(json) >>> {
-            dictionary ($0,"places") >>> {
-                array($0, "place") >>> {
-                    flatten($0.map(Place.decode1) )}}}   //-----------------decode1
+                  dictionary ($0,"places") >>> {
+                        array($0, "place") >>> { flatten($0.map(Place.decode1) )}}}
 
     }
 }
-// ---- Конец структуры Places----
+// ------------ Places -------------------------
 

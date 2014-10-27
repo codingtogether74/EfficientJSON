@@ -17,6 +17,7 @@
 		E474FEB219EBFE4200FDACAB /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = E474FEB119EBFE4200FDACAB /* User.swift */; };
 		E4BF2D1319EFA3F800E4FC48 /* RespondParse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BF2D1219EFA3F800E4FC48 /* RespondParse.swift */; };
 		E4BF2D1519EFB98F00E4FC48 /* Blog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BF2D1419EFB98F00E4FC48 /* Blog.swift */; };
+		E4CAA40319FEA2DD008D4881 /* FlickrFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E4CAA40219FEA2DD008D4881 /* FlickrFetcher.m */; };
 		E4D8C8B11998E37E00546F77 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C8B01998E37E00546F77 /* Result.swift */; };
 /* End PBXBuildFile section */
 
@@ -49,6 +50,10 @@
 		E49CBC0619EC0DB200253340 /* EfficientJSONBLOG.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = EfficientJSONBLOG.playground; sourceTree = "<group>"; };
 		E4BF2D1219EFA3F800E4FC48 /* RespondParse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RespondParse.swift; sourceTree = "<group>"; };
 		E4BF2D1419EFB98F00E4FC48 /* Blog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog.swift; sourceTree = "<group>"; };
+		E4CAA3FF19FEA21F008D4881 /* EfficientJSON-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EfficientJSON-Bridging-Header.h"; sourceTree = "<group>"; };
+		E4CAA40019FEA2DD008D4881 /* FlickrAPIkey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlickrAPIkey.h; path = Flickr/FlickrAPIkey.h; sourceTree = "<group>"; };
+		E4CAA40119FEA2DD008D4881 /* FlickrFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlickrFetcher.h; path = Flickr/FlickrFetcher.h; sourceTree = "<group>"; };
+		E4CAA40219FEA2DD008D4881 /* FlickrFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FlickrFetcher.m; path = Flickr/FlickrFetcher.m; sourceTree = "<group>"; };
 		E4CE367C19F96B3700D95C53 /* EfficientJSONBlogs.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = EfficientJSONBlogs.playground; sourceTree = "<group>"; };
 		E4D8C8B01998E37E00546F77 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -74,11 +79,11 @@
 		E44732A019F6A87A00B14C7D /* Playgrounds */ = {
 			isa = PBXGroup;
 			children = (
-				E4CE367C19F96B3700D95C53 /* EfficientJSONBlogs.playground */,
-				E447329F19F6A86100B14C7D /* EfficientJSONRealLife.playground */,
-				E408AB4E19F7DFD700AB4CF9 /* EffisientJSONEmbeddedANDArrays.playground */,
 				E474FEB019EBF2EE00FDACAB /* EfficientJSON.playground */,
+				E408AB4E19F7DFD700AB4CF9 /* EffisientJSONEmbeddedANDArrays.playground */,
+				E447329F19F6A86100B14C7D /* EfficientJSONRealLife.playground */,
 				E49CBC0619EC0DB200253340 /* EfficientJSONBLOG.playground */,
+				E4CE367C19F96B3700D95C53 /* EfficientJSONBlogs.playground */,
 			);
 			name = Playgrounds;
 			sourceTree = "<group>";
@@ -104,13 +109,15 @@
 		E45619171993A1DC00A38730 /* EfficientJSON */ = {
 			isa = PBXGroup;
 			children = (
+				E4CAA40419FEA2E6008D4881 /* Flickr */,
 				E44732A019F6A87A00B14C7D /* Playgrounds */,
+				E45F95F319F5851200EEC199 /* Models */,
 				E456191C1993A1DC00A38730 /* ViewController.swift */,
+				E456191E1993A1DC00A38730 /* Main.storyboard */,
 				E45619371993A20C00A38730 /* JSONSwift.swift */,
 				E4D8C8B01998E37E00546F77 /* Result.swift */,
 				E4BF2D1219EFA3F800E4FC48 /* RespondParse.swift */,
-				E45F95F319F5851200EEC199 /* Models */,
-				E456191E1993A1DC00A38730 /* Main.storyboard */,
+				E4CAA3FF19FEA21F008D4881 /* EfficientJSON-Bridging-Header.h */,
 				E45619211993A1DC00A38730 /* Images.xcassets */,
 				E45619181993A1DC00A38730 /* Supporting Files */,
 			);
@@ -151,6 +158,16 @@
 				E451D6FD19EEB9130091FAD4 /* Place.swift */,
 			);
 			name = Models;
+			sourceTree = "<group>";
+		};
+		E4CAA40419FEA2E6008D4881 /* Flickr */ = {
+			isa = PBXGroup;
+			children = (
+				E4CAA40019FEA2DD008D4881 /* FlickrAPIkey.h */,
+				E4CAA40119FEA2DD008D4881 /* FlickrFetcher.h */,
+				E4CAA40219FEA2DD008D4881 /* FlickrFetcher.m */,
+			);
+			name = Flickr;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -253,6 +270,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E45619381993A20C00A38730 /* JSONSwift.swift in Sources */,
+				E4CAA40319FEA2DD008D4881 /* FlickrFetcher.m in Sources */,
 				E4BF2D1519EFB98F00E4FC48 /* Blog.swift in Sources */,
 				E456191D1993A1DC00A38730 /* ViewController.swift in Sources */,
 				E4BF2D1319EFA3F800E4FC48 /* RespondParse.swift in Sources */,
@@ -378,6 +396,7 @@
 				INFOPLIST_FILE = EfficientJSON/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "EfficientJSON/EfficientJSON-Bridging-Header.h";
 			};
 			name = Debug;
 		};
@@ -389,6 +408,7 @@
 				INFOPLIST_FILE = EfficientJSON/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "EfficientJSON/EfficientJSON-Bridging-Header.h";
 			};
 			name = Release;
 		};

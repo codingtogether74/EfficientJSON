@@ -7,9 +7,11 @@
 //
 
 import Foundation
+
 func toURL(urlString: String) -> NSURL {
     return NSURL(string: urlString)!
 }
+//-------------- MODEL Blogs ----------------
 
 struct Blog: Printable,JSONDecodable {
     let id: Int
@@ -26,27 +28,28 @@ struct Blog: Printable,JSONDecodable {
     
     static func decode(json: JSON) -> Result<Blog> {
         let blog = JSONObject(json) >>> { dict in
-            Blog.create <^>
-                dict["id"]    >>> JSONInt    <*>
-                dict["name"] >>> JSONString <*>
-                dict["needspassword"] >>> JSONInt <*>
-                dict["url"] >>> JSONString
+            Blog.create
+                <^> dict["id"]    >>> JSONInt
+                <*> dict["name"] >>> JSONString
+                <*> dict["needspassword"] >>> JSONInt
+                <*> dict["url"] >>> JSONString
         }
         return resultFromOptional(blog, NSError()) // custom error message
     }
     
-    static func decode1(json: JSON) -> Blog? {   ///---------------decode1
+    static func decode1(json: JSON) -> Blog? {
         return  JSONObject(json) >>> { dict in
-            Blog.create <^>
-                dict["id"]    >>> JSONInt    <*>
-                dict["name"] >>> JSONString <*>
-                dict["needspassword"] >>> JSONInt <*>
-                dict["url"] >>> JSONString
+            Blog.create
+                <^> dict["id"]    >>> JSONInt
+                <*> dict["name"]  >>> JSONString
+                <*> dict["needspassword"] >>> JSONInt
+                <*> dict["url"] >>> JSONString
         }
     }
 
 }
-// ----Структура Blogs ----
+
+//-------------- MODEL Blogs ----------------
 
 struct Blogs: Printable,JSONDecodable {
     
@@ -68,16 +71,15 @@ struct Blogs: Printable,JSONDecodable {
         return Blogs(blogs1: blogs)
     }
     
-    static func decode1(json: JSON) -> Blogs? {           //------------------decode1
-        return create <*> JSONObject(json) >>> {
-            dictionary ($0,"blogs") >>> {
-                array($0, "blog") >>> {
-                    flatten($0.map(Blog.decode1) )}}}
+    static func decode1(json: JSON) -> Blogs? {
+        return create <^> JSONObject(json) >>> {
+                   dictionary ($0,"blogs") >>> {
+                         array($0, "blog") >>> { flatten($0.map(Blog.decode1) )}}}
         
     }
 }
-// ---- Конец структуры Blogs----
 
+//------------------Parsing Functions Step by Step ---------------------------
 
 func getBlog0(jsonOptional: NSData?) {
     var jsonErrorOptional: NSError?
@@ -108,6 +110,8 @@ func getBlog0(jsonOptional: NSData?) {
     
 }
 
+//-------------------------------------------------------------
+
 func getBlog1(jsonOptional: NSData?, callback: (Blog) -> ()) {
     var jsonErrorOptional: NSError?
     let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional!, options: NSJSONReadingOptions(0), error: &jsonErrorOptional)
@@ -136,6 +140,8 @@ func getBlog1(jsonOptional: NSData?, callback: (Blog) -> ()) {
         }
     }
 }
+
+//-------------------------------------------------------------
 
 func getBlog2(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     var jsonErrorOptional: NSError?
@@ -176,6 +182,7 @@ func getBlog2(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     callback(.Error(NSError()))
 }
 
+//-------------------------------------------------------------
 func getBlog3(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     var jsonErrorOptional: NSError?
     let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional!,
@@ -215,7 +222,7 @@ func getBlog3(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     
 }
 
-
+//-------------------------------------------------------------------------
 func getBlog4(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     
     var jsonErrorOptional: NSError?
@@ -329,10 +336,10 @@ func decodeObjectBlogs(json: JSON) -> [Result<Blog>]? {
     
 }
 
-// ----- использована структура Blogs -----КЛАСС!!!
+//------------- Test 11 (Structure Blogs) correct data - THAT'S COOL------------
 
 func getBlog11(jsonOptional: NSData?, callback: (Result<Blogs>) -> ()) {
-    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
+    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: "  Wrong data for Parsing"))
     let json: ()? =  jsonResult  >>> decodeJSON  >>> decodeObject >>> callback
 }
 

@@ -4,7 +4,9 @@ import Foundation
 
 //---- по статье http://robots.thoughtbot.com/parsing-embedded-json-and-arrays-in-swift
 
-/*  структура Post поста социальных сетей
+// ----- IT COULD TAKE MINUTES to Build ---- WAIT -----
+
+/*   Post to a social network
 
 let parsedJSON : [String:AnyObject] =
 {
@@ -16,20 +18,20 @@ let parsedJSON : [String:AnyObject] =
 }
 }*/
 
-//------- Исходные правильные данные для парсинга Post -----
-//      ----- Тест 1 - правильные данные  -----
+//------- Correct data for parsing Post -----
+//      ----- Test 1 - Correct data  -----
 
 let jsonString: String = "{ \"id\": 5, \"text\":\"This is a post.\",  \"author\": { \"id\": 5, \"name\":\"Cool User\" }}"
 
 let jsonData: NSData? = jsonString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
 
-//~~~~~~~~~~~~~~~~~~~~~~~ ПАРСИНГ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~ PARSING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 typealias JSON = AnyObject
 typealias JSONObject = [String:JSON]
 typealias JSONArray = [JSON]
 
+//---------- Functional programming OPERATORS >>>  <^>   и  <*>  ---
 
-//---------- ОПЕРАТОРЫ функционального программирования >>>  <^>   и  <*>  ---
 infix operator >>> { associativity left precedence 150 } // Bind
 infix operator <^> { associativity left } // Functor's fmap (usually <$>)
 infix operator <*> { associativity left } // Applicative's apply
@@ -59,7 +61,7 @@ func <*><A, B>(f: (A -> B)?, a: A?) -> B? {
     return .None
 }
 
-//~~~~~~~~~~ работаем с enum  Result<A> ~~~~~~~~~~~~
+//~~~~~~~~~~  enum  Result<A> ~~~~~~~~~~~~
 
 final class Box<A> {
     let value: A
@@ -92,8 +94,8 @@ enum Result<A> {
         }
     }
 }
-//--------------- Для печати Result ---
 
+//--------------- for Result print ---
 
 func stringResult<A:Printable>(result: Result<A> ) -> String {
     switch result {
@@ -103,7 +105,7 @@ func stringResult<A:Printable>(result: Result<A> ) -> String {
         return "\(box.value.description)"
     }
 }
-//-----------------------------от Optional к  Result<A> ---------
+//----------------------------- from Optional to  Result<A> ---------
 
 func resultFromOptional<A>(optional: A?, error: NSError) -> Result<A> {
     if let a = optional {
@@ -112,15 +114,15 @@ func resultFromOptional<A>(optional: A?, error: NSError) -> Result<A> {
         return .Error(error)
     }
 }
-// ------------ Возврат ошибки NSError ----
-// Для упрощения работы с классом NSError создаем "удобный" инициализатор в расширении класса
+
+//-------- convenience initializer for  NSError class -----
 
 extension NSError {
     convenience init(localizedDescription: String) {
         self.init(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: localizedDescription])
     }
 }
-//------------------ Для Result<JSON> -----
+//------------------ For Result<JSON> -----
 
 func decodeJSON(data: NSData) -> Result<JSON> {
     let jsonOptional: JSON! = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(0), error: nil)
@@ -128,7 +130,7 @@ func decodeJSON(data: NSData) -> Result<JSON> {
     return resultFromOptional(jsonOptional, NSError(localizedDescription: "JSON данные неверны")) // use the error from NSJSONSerialization or a custom error message
 }
 
-//------------------ Для Optionals JSON? -----
+//------------------ For Optionals JSON? -----
 
 func decodeJSON(data: NSData?) -> JSON? {
     var jsonErrorOptional: NSError?
@@ -139,7 +141,7 @@ func decodeJSON(data: NSData?) -> JSON? {
         return .None
     }
 }
-//--------------------- Оператор >>> для Result---
+//--------------------- Operator >>> для Result---
 
 func >>><A, B>(a: Result<A>, f: A -> Result<B>) -> Result<B> {
     switch a {
@@ -147,8 +149,10 @@ func >>><A, B>(a: Result<A>, f: A -> Result<B>) -> Result<B> {
     case let .Error(error): return .Error(error)
     }
 }
-//~~~~~~~~~ДОБАВЛЯЕМ ФУНКЦИИ  ~~~~~~~~~~~~~~~~~~~
-//------- flatten функцию ---
+//~~~~~~~~~ ADD FUNCTIONS  ~~~~~~~~~~~~~~~~~~~
+
+//------- flatten function ---
+
 func flatten<A>(array: [A?]) -> [A] {
     var list: [A] = []
     for item in array {
@@ -158,11 +162,12 @@ func flatten<A>(array: [A?]) -> [A] {
     }
     return list
 }
-//-------pure функцию ---
+
+//-------pure function ---
 func pure<A>(a: A) -> A? {
     return .Some(a)
 }
-//---------------- Используем Generics -----------
+//---------------- Use Generics -----------
 
 protocol JSONDecodable {
     class func decode1(json: JSON) -> Self?
@@ -204,7 +209,7 @@ extension Bool: JSONDecodable {
     }
 }
 
-//-------- Операторы извлечения данных из JSON-------
+//-------- Operators for Pull data from JSON -------
 
 infix operator <| { associativity left precedence 150 }
 infix operator <|* { associativity left precedence 150 }
@@ -227,7 +232,7 @@ func <|*<A: JSONDecodable>(d: JSONObject, key: String) -> A?? {
     return pure(d <| key)
 }
 
-//~~~~~~~~~~~~~~~~ МОДЕЛЬ Post ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~ MODEL Post ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 struct Post: JSONDecodable, Printable {
     let id: Int
     let text: String
@@ -253,13 +258,14 @@ struct Post: JSONDecodable, Printable {
     }
 }
 
-//~~~~~~~~~~~~~~~~~~ ПАРСИНГ структуры Post~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~ PARSING Post ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 func getPost(jsonOptional: NSData?, callback: (Result<Post>) -> ()) {
     let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
     let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
 }
-//      ----- Тест 1 - правильные данные -----
+
+//----------------- Test 1 - Correct data -----
 
 getPost(jsonData){ user in
     let a = stringResult(user)
@@ -303,19 +309,21 @@ struct Comment: JSONDecodable, Printable {
         }
     }
 }
-//~~~~~~~~~~~~~~~~~~ ПАРСИНГ структуры Comment~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~ PARSING Comment ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 func getComment(jsonOptional: NSData?, callback: (Result<Comment>) -> ()) {
     let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
     let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
 }
-//      ----- Тест 1 - правильные данные -----
+
+//----------------- Test 1 - Correct data -----
 
 getComment(jsonData){ user in
     let a = stringResult(user)
     println("\(a)")
 }
 //--------------- User ------------------
+
 struct User: JSONDecodable, Printable {
     let id: Int
     let name: String
@@ -339,14 +347,14 @@ struct User: JSONDecodable, Printable {
         }
     }
 }
-//  -------------- ДАННЫЕ ----------------------
+//-------------- DATA ----------------------
 
 //let jsonString3: String =  "{ \"id\": 1, \"name\":\"Cool user\" }"
 let jsonString3: String = "{ \"id\": 1, \"name\":\"Cool user\",  \"email\": \"u.cool@example.com\" }"
 
 let jsonData3: NSData? = jsonString3.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
 
-//      ----- Тест User -----
+//------------ Test User -----
 
 func getUser(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
     let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
@@ -357,9 +365,9 @@ getUser(jsonData3){ user in
     println("\(a)")
 }
 
-//~~~~~~~~~~~~~~~~ МОДЕЛЬ Post1 с Comments ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~ MODEL Post1 with Comments ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//      -----------------ДАННЫЕ-------------
+//-------------------- DATA -------------
 let jsonString5: String = "{\"id\": 3, \"text\": \"A Cool story.\",\"author\": {\"id\": 1,\"name\": \"Cool User\"},\"comments\": [{\"id\": 6,\"text\": \"Cool story bro.\",\"author\": {\"id\": 1,\"name\": \"Cool User\"}},{\"id\": 6,\"text\": \"Cool story bro.\",\"author\": {\"id\": 1,\"name\": \"Cool User\"}}]}"
 
 let jsonData5: NSData? = jsonString5.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
@@ -389,17 +397,17 @@ struct Post1: JSONDecodable, Printable {
         }
     }
 }
-//------------ Тест Post1 -----
+//------------ Test Post1 -----
 
 func getPost1(jsonOptional: NSData?, callback: (Result<Post1>) -> ()) {
-    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
+    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Wrong data for parsing"))
     let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
 }
 getPost1(jsonData5){ user in
     let a = stringResult(user)
     println("\(a)")
 }
-/* ---------- Post2  c Comments -------------------
+/* ---------- Post2 with Comments -------------------
 let parsedJSON : [String:AnyObject] =
 {
     "id": 3,
@@ -464,7 +472,7 @@ struct Post2: JSONDecodable, Printable {
 //------------ Тест Post1 -----
 
 func getPost2(jsonOptional: NSData?, callback: (Result<Post2>) -> ()) {
-    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
+    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Wrong data for parsing"))
     let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
 }
 getPost2(jsonData5){ user in

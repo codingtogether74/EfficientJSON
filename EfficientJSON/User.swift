@@ -8,7 +8,7 @@
 
 import Foundation
 
-//----------------- МОДЕЛЬ User1 --------
+//----------------- MODEL User1 --------
 
 struct User1: JSONDecodable, Printable {
     let id: Int
@@ -23,37 +23,16 @@ struct User1: JSONDecodable, Printable {
         return User1(id: id, name: name, email: email)
     }
     
-    static func decode1(json: JSON) -> User1? {  //------------decode1
+    static func decode1(json: JSON) -> User1? {
         return JSONObject(json) >>> { d in
-            User1.create <^>
-                d["id"]    >>> JSONInt    <*>
-                d["name"]  >>> JSONString <*>
-                d["email"] >>> JSONString
+            User1.create
+                <^> d["id"]    >>> JSONInt
+                <*> d["name"]  >>> JSONString
+                <*> d["email"] >>> JSONString
         }
     }
-    
-    static func decode(json: JSON) -> Result<User1> {   //------------decode1
-
-        let user1 = JSONObject(json) >>> { dict in
-            User1.create <^>
-                dict["id"]    >>> JSONInt    <*>
-                dict["name"]  >>> JSONString <*>
-                dict["email"] >>> JSONString
-        }
-        return resultFromOptional(user1, NSError(localizedDescription: "Отсутствуют компоненты User")) // custom error message
-    }
-/*
-    static func stringResult(result: Result<User1> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-            return "\(box.value.description)"
-        }
-    }
-*/
 }
-//----------------- МОДЕЛЬ User --------
+//----------------- MODEL User --------
 
 struct User:  JSONDecodable, Printable {
     let id: Int
@@ -67,46 +46,27 @@ struct User:  JSONDecodable, Printable {
     static func create(id: Int)(name: String)(email: String?) -> User {
         return User(id: id, name: name, email: email)
     }
-/*
-    static func stringResult(result: Result<User> ) -> String {
-        switch result {
-        case let .Error(err):
-            return "\(err.localizedDescription)"
-        case let .Value(box):
-              return "\(box.value.description)"
-        }
-    }
-*/    
-    static func decode1(json: JSON) -> User? {   //------------decode1
+  
+    static func decode1(json: JSON) -> User? {
         return _JSONParse(json) >>> { d in
-            User.create <^>
-                extract (d,"id")    <*>
-                extract (d,"name")  <*>
-                extractPure (d,"email")
+            User.create
+                <^> extract (d,"id")
+                <*> extract (d,"name")
+                <*> extractPure (d,"email")
         }
     }
 
-    static func decode(json: JSON) -> Result<User> {   //------------decode1
+    static func decode(json: JSON) -> Result<User> { 
         
         let user = JSONObject(json) >>> { dict in
-            User.create <^>
-                dict["id"]    >>> JSONInt    <*>
-                dict["name"]  >>> JSONString <*>
-                pure(dict["email"] >>> JSONString)
+            User.create
+                <^> dict["id"]    >>> JSONInt
+                <*> dict["name"]  >>> JSONString
+                <*> pure(dict["email"] >>> JSONString)
         }
-        return resultFromOptional(user, NSError(localizedDescription: "Отсутствуют компоненты User")) // custom error message
+        return resultFromOptional(user, NSError(localizedDescription: "No some components of  User")) // custom error message
     }
-/*
-    static func decode(json: JSON) -> Result<User> {
-        let user =  _JSONParse(json) >>> { d in
-            User.create <^>
-                extract (d,"id")    <*>
-                extract (d,"name")  <*>
-                extractPure (d,"email")
-        }
-       return resultFromOptional(user, NSError(localizedDescription: "Отсутствуют компоненты User")) // custom error message
-    }
-*/
+
 }
 
 //----------------- МОДЕЛЬ User2 --------
@@ -124,24 +84,13 @@ struct User2: JSONDecodable, Printable {
         return User2(id: id, name: name, email: email)
     }
     
-    static func decode1(json: JSON) -> User2? {  //------------decode1
+    static func decode1(json: JSON) -> User2? {
         return JSONObject(json) >>> { d in
-            User2.create <^>
-                d["id"]    >>> JSONInt    <*>
-                d["name"]  >>> JSONString <*>
-                d["email"] >>> JSONString 
+            User2.create
+                <^> d["id"]    >>> JSONInt
+                <*> d["name"]  >>> JSONString
+                <*> d["email"] >>> JSONString
         }
-    }
-    
-    static func decode(json: JSON) -> Result<User2> {   //------------decode1
-        
-        let user2 = JSONObject(json) >>> { dict in
-            User2.create <^>
-                dict["id"]    >>> JSONInt    <*>
-                dict["name"]  >>> JSONString <*>
-                dict["email"] >>> JSONString
-        }
-        return resultFromOptional(user2, NSError(localizedDescription: "Отсутствуют компоненты User")) // custom error message
     }
 }
 //-------------------------ФУНКЦИИ ПАРСИНГА------
@@ -191,12 +140,12 @@ func getUser4(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
 }
 
 func getUser5(jsonOptional: NSData?, callback: (Result<User1>) -> ()) {
-    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
+    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Wrong data for Parsing"))
     let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
 }
 
 func getUser6(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
-    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
+    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Wrong data for Parsing"))
     let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
 }
 

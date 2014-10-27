@@ -15,7 +15,7 @@ typealias JSONArray = Array<JSON>
 
 // functions
 func dictionary(input: JSONDictionary, key: String) ->  JSONDictionary? {
-    return input[key] >>> { $0 as? JSONDictionary } //[String:AnyObject]
+    return input[key] >>> { $0 as? JSONDictionary }
 }
 
 func array(input: JSONDictionary, key: String) ->  JSONArray? {
@@ -40,7 +40,7 @@ func JSONObject(object: JSON) -> JSONDictionary? {
 func JSONCollection(object: JSON) -> JSONArray? {
     return object as? JSONArray
 }
-//------------------------------
+//------------Functions------------------
 
 public func flatten<A>(array: [A?]) -> [A] {
     var list: [A] = []
@@ -67,29 +67,19 @@ func extract<A>(json: JSONDictionary, key: String) -> A? {
 func extractPure<A>(json: JSONDictionary, key: String) -> A?? {
     return pure(json[key] >>> _JSONParse)
 }
-// ----------------operators
+// ----------------operators Optional ----
 
 infix operator >>> { associativity left precedence 150 }
+infix operator <^> { associativity left } // Functor's fmap (usually <$>)
+infix operator <*> { associativity left } // Applicative's apply
 
-func >>><A, B>(a: A?, f: A -> B?) -> B? {
+public func >>><A, B>(a: A?, f: A -> B?) -> B? {
     if let x = a {
         return f(x)
     } else {
         return .None
     }
 }
-
-func >>><A, B>(a: Result<A>, f: A -> Result<B>) -> Result<B> {
-    switch a {
-    case let .Value(x):     return f(x.value)
-    case let .Error(error): return .Error(error)
-    }
-}
-
-
-
-infix operator <^> { associativity left } // Functor's fmap (usually <$>)
-infix operator <*> { associativity left } // Applicative's apply
 
 public func <^><A, B>(f: A -> B, a: A?) -> B? {
     if let x = a {
@@ -99,7 +89,7 @@ public func <^><A, B>(f: A -> B, a: A?) -> B? {
     }
 }
 
-func <*><A, B>(f: (A -> B)?, a: A?) -> B? {
+public func <*><A, B>(f: (A -> B)?, a: A?) -> B? {
     if let x = a {
         if let fx = f {
             return fx(x)
@@ -107,7 +97,8 @@ func <*><A, B>(f: (A -> B)?, a: A?) -> B? {
     }
     return .None
 }
-// Для упрощения работы с классом NSError создаем "удобный" инициализатор в расширении класса
+
+//-------- convenience initializer for  NSError class -----
 
 extension NSError {
     convenience init(localizedDescription: String) {
@@ -115,7 +106,7 @@ extension NSError {
     }
 }
 
-//------------------ Преобразование Optionals в Result -----
+//------------------ From Optionals to Result -----
 
 func resultFromOptional<A>(optional: A?, error: NSError) -> Result<A> {
     if let a = optional {
@@ -124,18 +115,17 @@ func resultFromOptional<A>(optional: A?, error: NSError) -> Result<A> {
         return .Error(error)
     }
 }
-
-//------------------ Протокол  JSONDecodable -----
+//------------------ protocol  JSONDecodable -----
 
 protocol JSONDecodable {
     class func decode1(json: JSON) -> Self?
 }
 
 func decodeObject<A: JSONDecodable>(json: JSON) -> Result<A> {
-    return resultFromOptional(A.decode1(json), NSError(localizedDescription: "Отсутствуют компоненты структуры")) // custom error
+    return resultFromOptional(A.decode1(json), NSError(localizedDescription: "No some components of MODEL")) // custom error
 }
 
-//------------------ Для Optionals JSON? -----
+//------------------ For Optionals JSON? -----
 
 func decodeJSON(data: NSData?) -> JSON? {
     var jsonErrorOptional: NSError?
@@ -147,12 +137,21 @@ func decodeJSON(data: NSData?) -> JSON? {
     }
 }
 
-//------------------ Для Result<JSON> -----
+//------------------ For Result<JSON> -----
 
 func decodeJSON(data: NSData) -> Result<JSON> {
     let jsonOptional: JSON! = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(0), error: nil)
-//    println(jsonOptional)
-    return resultFromOptional(jsonOptional, NSError(localizedDescription: "исходные данные неверны")) // use the error from NSJSONSerialization or a custom error message
+    return resultFromOptional(jsonOptional,
+                       NSError(localizedDescription: "Wrong data for Parsing")) // error from NSJSONSerialization
+}
+
+// ----------------operators Result<A> ----
+
+func >>><A, B>(a: Result<A>, f: A -> Result<B>) -> Result<B> {
+    switch a {
+    case let .Value(x):     return f(x.value)
+    case let .Error(error): return .Error(error)
+    }
 }
 //------------------------------------------
 

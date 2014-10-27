@@ -4,9 +4,9 @@ import XCPlayground
 
 XCPSetExecutionShouldContinueIndefinitely()
 
-//---- по статье http://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics
+//---- Aticle http://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics
 
-// Данные как в статье Cris Eidnof http://chris.eidhof.nl/posts/json-parsing-in-swift.html
+// Data from Aticle Cris Eidnof http://chris.eidhof.nl/posts/json-parsing-in-swift.html
 
 /*
 let parsedJSON : [String:AnyObject] = [
@@ -29,12 +29,13 @@ let parsedJSON : [String:AnyObject] = [
     ]
 ]
 */
-//~~~~~~~~~~~~~~~~~~~~~ корректные ДАННЫЕ ~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~ Correct Data~~~~~~~~~~~~~~~~~~~~~~~
 
 var jsonString1 = "{ \"stat\": \"ok\", \"blogs\": { \"blog\": [ { \"id\" : 73, \"name\" : \"Bloxus test\", \"needspassword\" : true, \"url\" : \"http://remote.bloxus.com/\" }, { \"id\" : 74, \"name\" : \"Manila Test\", \"needspassword\" : false, \"url\" : \"http://flickrtest1.userland.com/\" } ] } }"
 let jsonData1 = jsonString1.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
 
-//~~~~~~~~~~~~~~~~~~~~~~~ ПАРСИНГ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~ PARSING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 typealias JSON = AnyObject
 typealias JSONDictionary = Dictionary<String, JSON>
 typealias JSONArray = Array<JSON>
@@ -57,7 +58,8 @@ func JSONCollection(object: JSON) -> JSONArray? {
     return object as? JSONArray
 }
 
-//--------------------- Новые операторы <^>   и  <*>  ---
+//--------Functional programming OPERATOR <^>   и  <*>  ---
+
 infix operator >>> { associativity left precedence 150 } // Bind 
 infix operator <^> { associativity left } // Functor's fmap (usually <$>)
 infix operator <*> { associativity left } // Applicative's apply
@@ -93,22 +95,22 @@ func resultFromOptional<A>(optional: A?, error: NSError) -> Result<A> {
         return .Error(error)
     }
 }
-// ------------ Возврат ошибки NSError ----
-// Для упрощения работы с классом NSError создаем "удобный" инициализатор в расширении класса
+
+//-------- convenience initializer for  NSError class -----
 
 extension NSError {
     convenience init(localizedDescription: String) {
         self.init(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: localizedDescription])
     }
 }
-//------------------ Для Result<JSON> -----
+//------------------ For Result<JSON> -----
 
 func decodeJSON(data: NSData) -> Result<JSON> {
     let jsonOptional: JSON! = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(0), error: nil)
     return resultFromOptional(jsonOptional, NSError(localizedDescription: "исходные данные неверны")) // use the error from NSJSONSerialization or a custom error message
 }
 
-//------------------ Для Optionals JSON? -----
+//------------------ For Optionals JSON? -----
 
 func decodeJSON(data: NSData?) -> JSON? {
     var jsonErrorOptional: NSError?
@@ -120,7 +122,7 @@ func decodeJSON(data: NSData?) -> JSON? {
     }
 }
 
-//--------------------- Оператор >>> для Result---
+//--------------------- Operator >>> for Result---
 
 func >>><A, B>(a: Result<A>, f: A -> Result<B>) -> Result<B> {
     switch a {
@@ -128,7 +130,7 @@ func >>><A, B>(a: Result<A>, f: A -> Result<B>) -> Result<B> {
     case let .Error(error): return .Error(error)
     }
 }
-//---------------- Используем Generic -----------
+//---------------- Use Generic -----------
 
 protocol JSONDecodable {
     class func decode1(json: JSON) -> Self?
@@ -137,7 +139,8 @@ protocol JSONDecodable {
 func decodeObject<A: JSONDecodable>(json: JSON) -> Result<A> {
     return resultFromOptional(A.decode1(json), NSError(localizedDescription: "Отсутствуют компоненты User1")) // custom error
 }
-//----------------достаем данные из Сети-------------------------
+//---------------- Get Data From Network -------------------------
+
 struct Response {
     let data: NSData
     let statusCode: Int = 500
@@ -172,7 +175,7 @@ func parseResponse(response: Response) -> Result<NSData> {
     }
     return Result(nil, response.data)
 }
-//-----------Вынимаем словари и массивы из словарей по ключам --------------
+//-----------Pull dictionary and array from  JSONDictionary by keys ---
 
 func dictionary(input: JSONDictionary, key: String) ->  JSONDictionary? {
     return input[key] >>> { $0 as? JSONDictionary } //[String:AnyObject]
@@ -232,7 +235,7 @@ enum Result<A> {
     }
 }
 
-//--------------- Для печати Result на Playground ---
+//--------------- For Print Result ---
 
 
 func stringResult<A:Printable>(result: Result<A> ) -> String {
@@ -249,8 +252,7 @@ func toURL(urlString: String) -> NSURL {
     return NSURL(string: urlString)!
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~  МОДЕЛЬ одного Blog ~~~~~~~~~~~~~~~
-// ----------------------Структура Blog -----------
+//~~~~~~~~~~~~~~~~~~~~~~~ MODEL Blog ~~~~~~~~~~~~~~~
 
 struct Blog: Printable,JSONDecodable  {
     let id: Int
@@ -287,8 +289,7 @@ struct Blog: Printable,JSONDecodable  {
     }
 }
 
-//-------------------- МОДЕЛЬ массива блогов--------
-// ----------------------Структура Blogs -----------
+//-------------------- MODEL Blogs --------
 
 struct Blogs: Printable,JSONDecodable {
     
@@ -317,12 +318,10 @@ struct Blogs: Printable,JSONDecodable {
         }
     }
 }
-// ---- Конец структуры Blogs----
 
+//~~~~~~~~~~ Parsing Functions for Model Blog ~~~~~~~~~~~~~~~~
 
-//~~~~~~~~~~ специализированные ФУНКЦИИ ПАРСИНГА  для модели Blog ~~~~~~~~~~~~~~~~
-
-//-------------- травиальная разборка с if-let------------------------------
+//-------------- trivial if-let------------------------------
 
 func getBlog1(jsonOptional: NSData?, callback: (Blog) -> ()) {
     var jsonErrorOptional: NSError?
@@ -353,14 +352,15 @@ func getBlog1(jsonOptional: NSData?, callback: (Blog) -> ()) {
         }
     }
 }
-//------------- ТЕСТ 1 ВЫЗОВ ФУНКЦИЙ ПАРСИНГА правильных данных------------
+//------------- Test 1 CALL Parsing Function correct data------------
 
 println("----- 1:")
 getBlog1(jsonData1){ blog in
     let a = blog.description
     println("\(a)")
 }
-//-------------------------------- возвращаем Result<Blog> ----
+
+//-------------------------------- Return Result<Blog> ----
 
 func getBlog2(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     var jsonErrorOptional: NSError?
@@ -401,7 +401,7 @@ func getBlog2(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     callback(.Error(NSError()))
 }
 
-//------------- ТЕСТ 2 ВЫЗОВ ФУНКЦИЙ ПАРСИНГА правильных данных------------
+//------------- Test 2 CALL Parsing Function correct data------------
 
 println("----- 2:")
 getBlog2(jsonData1 ){ blog in
@@ -409,7 +409,7 @@ getBlog2(jsonData1 ){ blog in
     println(" \(a)")
 }
 
-//---- используем оператор >>> и функции JSONObject, JSONCollection и decodeJSON----
+//---- Use Operator >>> and functions JSONObject, JSONCollection and decodeJSON----
 
 func getBlog6(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
     
@@ -425,7 +425,9 @@ func getBlog6(jsonOptional: NSData?, callback: (Result<Blog>) -> ()) {
         }
     }
 }
-//------------- ТЕСТ 6 ВЫЗОВ ФУНКЦИЙ ПАРСИНГА правильных данных----
+
+//------------- Test 6 CALL Parsing Function correct data------------
+
 
 println("----- 6:")
 getBlog6(jsonData1 ){ blog in
@@ -433,7 +435,7 @@ getBlog6(jsonData1 ){ blog in
     println(" \(a)")
 }
 
-//---- используем протокол JSONDecodable и дженерики для структуры Blogs ----
+//---- Use protocol JSONDecodable and generics for Blogs ----
 
 func getBlog11(jsonOptional: NSData?, callback: (Result<Blogs>) -> ()) {
     let jsonResult = resultFromOptional(jsonOptional,
@@ -441,7 +443,7 @@ func getBlog11(jsonOptional: NSData?, callback: (Result<Blogs>) -> ()) {
     let json: ()? =  jsonResult  >>> decodeJSON  >>> decodeObject >>> callback
 }
 
-//------------- ТЕСТ 11 (структура Blogs) правильных данных это КЛАСС!!----
+//------------- Test 11 (Structure Blogs) correct data - THAT'S COOL------------
 
 println("----- 11 БЛОГИ:")
 getBlog11(jsonData1 ) { blogs in

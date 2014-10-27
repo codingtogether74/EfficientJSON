@@ -2,7 +2,7 @@
 
 import Foundation
 
-//---- по статье http://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics
+//---- Aticle http://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics
 
 /*let parsedJSON : [String:AnyObject] = [
     "id": 1,
@@ -24,13 +24,13 @@ struct User: Printable {
     
 }
 
-//------- Исходные данные для парсинга User -----
+//------- data for parsing User -----
 
 let jsonString: String = "{ \"id\": 1, \"name\":\"Cool user\",  \"email\": \"u.cool@example.com\" }"
 
 let jsonData: NSData? = jsonString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
 
-//~~~~~~~~~~~~~~~ if-let конструкции ~~~~~~~
+//~~~~~~~~~~~~~~~ if-let  ~~~~~~~
 
 func getUser0(jsonOptional: NSData?, callback: (User) -> ()) {
     var jsonErrorOptional: NSError?
@@ -47,15 +47,15 @@ func getUser0(jsonOptional: NSData?, callback: (User) -> ()) {
         }
     }
 }
-//      ----- Тест 1 ------
+//      ----- Test 1 ------
 
 getUser0(jsonData){ user in
     println("\(user.description)")
-    return // для удаления ошибки closure с одной строкой
+    return // add for closure with one line
 
 }
 
-//~~~~~~~~~~~~~~~~ Управление ошибками с помощью enum Result<A> ~~~~~~~
+//~~~~~~~~~~~~~~~~ Handling Errors with enum Result<A> ~~~~~~~
 
 final class Box<A> {
     let value: A
@@ -95,7 +95,7 @@ enum Result<A> {
         }
     }
 }
-//--------------- Для печати Result на Playground ---
+//--------------- For print Result  ---
 
 
 func stringResult<A:Printable>(result: Result<A> ) -> String {
@@ -107,15 +107,15 @@ func stringResult<A:Printable>(result: Result<A> ) -> String {
     }
 }
 
-// ------------ Возврат ошибки NSError ----
-// Для упрощения работы с классом NSError создаем "удобный" инициализатор в расширении класса
+//-------- convenience initializer for  NSError class -----
 
 extension NSError {
     convenience init(localizedDescription: String) {
         self.init(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: localizedDescription])
     }
 }
-//--------------------- Возврат Result<User> ---
+//--------------------- Return Result<User> ---------------
+
 func getUser1(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
     var jsonErrorOptional: NSError?
     let jsonObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(jsonOptional!, options: NSJSONReadingOptions(0), error: &jsonErrorOptional)
@@ -137,10 +137,10 @@ func getUser1(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
         }
     }
     
-    callback(.Error(NSError(localizedDescription: "Отсутствуют компоненты User")))
+    callback(.Error(NSError(localizedDescription: "no some components of User")))
 }
 
-//      ----- Тест 1 - правильные данные -----
+//      ----- Test 1 - Correct data -----
 
 let jsonString2: String = "{ \"id\": 1, \"name\":\"Cool user\",  \"email\": \"u.cool@example.com\" }"
 
@@ -151,7 +151,7 @@ getUser1(jsonData2 ){ user in
     println("\(a)")
 }
 
-//      ----- Тест 2 - неправильные данные (лишняя фигурная скобка) -----
+//      ----- Test 2 - incorrect data ( extra curly brace ) -----
 
 let jsonString3: String = "{ {\"id\": 1, \"name\":\"Cool user\",  \"email\": \"u.cool@example.com\" }"
 
@@ -163,7 +163,7 @@ getUser1(jsonData3 ){ user in
 
 }
 
-//      ----- Тест 3 - неправильные данные ( вместо "id" "id1") -----
+//      ----- Тест 3 - incorrect data ( instead of "id" there is  "id1") -----
 
 let jsonString4: String = "{ \"id1\": 1, \"name\":\"Cool user\",  \"email\": \"u.cool@example.com\" }"
 
@@ -174,7 +174,7 @@ getUser1(jsonData4 ){ user in
     println("\(a)")
 }
 
-//~~~~~~~~~~~~~~~~ Уничтожаем проверку типов ~~~~~~~
+//~~~~~~~~~~~~~~~~ Eliminate Type Checking Tree ~~~~~~~
 typealias JSON = AnyObject
 typealias JSONDictionary = Dictionary<String, JSON>
 typealias JSONArray = Array<JSON>
@@ -201,7 +201,7 @@ func JSONObject(object: JSON) -> JSONDictionary? {
     return object as? JSONDictionary
 }
 
-//--------------------- Используем оператор >>> ---
+//--------------------- Use bind Operator >>> ---
 
 func getUser2(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
     var jsonErrorOptional: NSError?
@@ -224,17 +224,16 @@ func getUser2(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
         }
     }
     
-    callback(.Error(NSError(localizedDescription: "Отсутствуют компоненты User")))
+    callback(.Error(NSError(localizedDescription: "no some components of User")))
 }
 
-//      ----- Тест 1 - правильные данные -----
+//      ----- Test 1 - Correct Data-----
 
 getUser2(jsonData){ user in
     let a = stringResult(user)
     println("\(a)")
 }
-
-//--------------------- Новые операторы <^>   и  <*>  ---
+//----- New Operators  <^>   and  <*>  ---
 
 infix operator <^> { associativity left } // Functor's fmap (usually <$>)
 infix operator <*> { associativity left } // Applicative's apply
@@ -255,11 +254,11 @@ func <*><A, B>(f: (A -> B)?, a: A?) -> B? {
     }
     return .None
 }
-//----------Расширяем struct User с помощью curried обертки инициализатора
+//---------- curry our User’s init --------
 //    static func create(id: Int)(name: String)(email: String) -> User {
 //        return User(id: id, name: name, email: email)
 //    }
-//--------------------- Собираем все вместе ---
+//--------------------- Putting it all together ---
 
 func getUser3(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
     var jsonErrorOptional: NSError?
@@ -280,17 +279,17 @@ func getUser3(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
             return
         }
     }    
-    callback(.Error(NSError(localizedDescription: "Отсутствуют компоненты User")))
+    callback(.Error(NSError(localizedDescription: "no some components of User")))
 }
 
-//      ----- Тест 1 - правильные данные -----
+//      ----- Тest 1 - Correct Data -----
 
 getUser3(jsonData){ user in
     let a = stringResult(user)
     println("\(a)")
 }
 
-//~~~~~~~~~~~~~~~~ Уничтожаем много численные callback ~~~~~~~
+//~~~~~~~~~~~~~~~~ Remove Multiple Returns with Bind ~~~~~~~
 
 func resultFromOptional<A>(optional: A?, error: NSError) -> Result<A> {
     if let a = optional {
@@ -302,11 +301,11 @@ func resultFromOptional<A>(optional: A?, error: NSError) -> Result<A> {
 
 func decodeJSON(data: NSData) -> Result<JSON> {
 let jsonOptional: JSON! = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(0), error: nil)
-return resultFromOptional(jsonOptional, NSError(localizedDescription: "исходные данные неверны")) // use the error from NSJSONSerialization or a custom error message
+return resultFromOptional(jsonOptional, NSError(localizedDescription: "Wrong data for Parsing")) // use the error from NSJSONSerialization or a custom error message
 }
 
 
-//--------------------- Оператор >>> для Result---
+//--------------------- Operator >>> for Result---
 
 func >>><A, B>(a: Result<A>, f: A -> Result<B>) -> Result<B> {
     switch a {
@@ -315,7 +314,7 @@ func >>><A, B>(a: Result<A>, f: A -> Result<B>) -> Result<B> {
     }
 }
 
-//---------- Добавляем в Resul инициализатор ---
+//---------- Add init to Resul ---
 //    init(_ error: NSError?, _ value: A) {
 //        if let err = error {
 //            self = .Error(err)
@@ -332,47 +331,47 @@ extension User {
                 dict["name"]  >>> JSONString <*>
                 dict["email"] >>> JSONString
         }
-        return resultFromOptional(user, NSError(localizedDescription: "Отсутствуют компоненты User")) // custom error message
+        return resultFromOptional(user, NSError(localizedDescription: "no some components of User")) // custom error message
     }
 }
 
-//--------------------- Собираем все вместе ---
+//--------------------- Putting it all together ---
 
 func getUser4(jsonOptional: NSData?, callback: (Result<User>) -> ()) {
-    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
+    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Wrong data for Parsing"))
     let user: ()? = jsonResult >>> decodeJSON
                                    >>> User.decode >>> callback
 }
 
-//      ----- Тест 1 - правильные данные -----
+//      ----- Test 1 - Correct data -----
 
 getUser4(jsonData){ user in
 let a = stringResult(user)
 println("\(a)")
 }
 
-//      ----- Тест 2 - неправильные данные (лишняя фигурная скобка) -----
+//      ----- Тest 2 - incorrect data (extra curly brase) -----
 
 getUser4(jsonData3){ user in
     let a = stringResult(user)
     println("\(a)")
 }
 
-//      ----- Тест 3 - неправильные данные ( вместо "id" "id1") -----
+//      ----- Test 3 - incorrect data ( insread of "id" ve have "id1") -----
 
 getUser4(jsonData4){ user in
     let a = stringResult(user)
     println("\(a)")
 }
 
-//========================== Используем Generic =====
+//========================== Use Generic =====
 
 protocol JSONDecodable {
     class func decode(json: JSON) -> Self?
 }
 
 func decodeObject<A: JSONDecodable>(json: JSON) -> Result<A> {
-    return resultFromOptional(A.decode(json), NSError(localizedDescription: "Отсутствуют компоненты")) // custom error
+    return resultFromOptional(A.decode(json), NSError(localizedDescription: "no some components of Model")) // custom error
 }
 
 struct User1: JSONDecodable, Printable {
@@ -403,30 +402,30 @@ struct User1: JSONDecodable, Printable {
                 dict["name"]  >>> JSONString <*>
                 dict["email"] >>> JSONString
         }
-        return resultFromOptional(user1, NSError(localizedDescription: "Отсутствуют компоненты User")) // custom error message
+        return resultFromOptional(user1, NSError(localizedDescription: "no some components of Model User")) // custom error message
     }
 }
 
 func getUser5(jsonOptional: NSData?, callback: (Result<User1>) -> ()) {
-    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: " Неверные данные"))
+    let jsonResult = resultFromOptional(jsonOptional, NSError(localizedDescription: "Wrong data for Parsing"))
     let user: ()? = jsonResult >>> decodeJSON >>> decodeObject >>> callback
 }
 
-//      ----- Тест 1 - правильные данные -----
+//      ----- Test 1 - Correct data -----
 
 getUser5(jsonData){ user1 in
     let a = stringResult(user1)
     println("\(a)")
 }
 
-//      ----- Тест 2 - неправильные данные (лишняя фигурная скобка) -----
+//      ----- Test 2 - incorrect data (extra curly brase) -----
 
 getUser5(jsonData3){ user in
     let a = stringResult(user)
     println("\(a)")
 }
 
-//      ----- Тест 3 - неправильные данные ( вместо "id" "id1") -----
+//      ----- Test 3 - incorrect data ( insread of "id" ve have "id1") -----
 
 getUser5(jsonData4){ user in
     let a = stringResult(user)
