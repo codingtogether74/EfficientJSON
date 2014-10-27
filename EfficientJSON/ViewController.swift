@@ -19,15 +19,16 @@ class ViewController: UITableViewController {
 //--------------- URL for places from Flickr.com ------------------------------------------
         let urlPlaces1  = FlickrFetcher.URLforTopPlaces()
         let urlPlaces  = NSURLRequest( URL: urlPlaces1)
-//        let urlPlaces  = NSURLRequest( URL: toURL( "https://api.flickr.com/services/rest/?method=flickr.places.getTopPlacesList&place_type_id=7&format=json&nojsoncallback=1&api_key=2d57c18bb70d5b3aea7b3b0034567af1"))
 
         performRequest(urlPlaces ) { (places: Result<Places>) in
             self.places = places.takeValue()!.places
             
             dispatch_async(dispatch_get_main_queue()) {
+                
                 self.tableView.reloadData()
                 self.testUserAndBlogs()
                 println("\(stringResult(places))")
+                
             }
         }
         
