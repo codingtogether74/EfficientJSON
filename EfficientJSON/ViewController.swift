@@ -17,17 +17,22 @@ class ViewController: UITableViewController {
         super.viewDidLoad()
         
 //--------------- URL for places from Flickr.com ------------------------------------------
-        let urlPlaces1  = FlickrFetcher.URLforTopPlaces()
-        let urlPlaces  = NSURLRequest( URL: urlPlaces1)
+
+        let urlPlaces  = NSURLRequest( URL: FlickrFetcher.URLforTopPlaces())
 
         performRequest(urlPlaces ) { (places: Result<Places>) in
-            self.places = places.takeValue()!.places
+            switch places {
+            case let .Error(err):
+                println ("\(err.localizedDescription)")
+            case let .Value(pls):
+                self.places = pls.value.places
+
+            }
             
             dispatch_async(dispatch_get_main_queue()) {
                 
                 self.tableView.reloadData()
                 self.testUserAndBlogs()
-                println("\(stringResult(places))")
                 
             }
         }

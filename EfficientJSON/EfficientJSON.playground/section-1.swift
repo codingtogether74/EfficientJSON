@@ -69,17 +69,6 @@ enum Result<A> {
     case Error(NSError)
     case Value(Box<A>)
 
-    var description : String {
-        get {
-            switch self{
-            case let .Error(err):
-                return "\(err.localizedDescription)"
-            case let .Value(box):
-                return "\(box.value)"
-            }
-        }
-    }
-
     func flatMap<B>(f:A -> Result<B>) -> Result<B> {
         switch self {
         case .Value(let v): return f(v.value)

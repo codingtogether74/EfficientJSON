@@ -18,7 +18,6 @@
 		E4BF2D1319EFA3F800E4FC48 /* RespondParse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BF2D1219EFA3F800E4FC48 /* RespondParse.swift */; };
 		E4BF2D1519EFB98F00E4FC48 /* Blog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BF2D1419EFB98F00E4FC48 /* Blog.swift */; };
 		E4CAA40319FEA2DD008D4881 /* FlickrFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E4CAA40219FEA2DD008D4881 /* FlickrFetcher.m */; };
-		E4CAA40C19FEC2F0008D4881 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = E4CAA40B19FEC2F0008D4881 /* README.md */; };
 		E4D8C8B11998E37E00546F77 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C8B01998E37E00546F77 /* Result.swift */; };
 /* End PBXBuildFile section */
 
@@ -55,7 +54,6 @@
 		E4CAA40019FEA2DD008D4881 /* FlickrAPIkey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlickrAPIkey.h; path = Flickr/FlickrAPIkey.h; sourceTree = "<group>"; };
 		E4CAA40119FEA2DD008D4881 /* FlickrFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlickrFetcher.h; path = Flickr/FlickrFetcher.h; sourceTree = "<group>"; };
 		E4CAA40219FEA2DD008D4881 /* FlickrFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FlickrFetcher.m; path = Flickr/FlickrFetcher.m; sourceTree = "<group>"; };
-		E4CAA40B19FEC2F0008D4881 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E4CE367C19F96B3700D95C53 /* EfficientJSONBlogs.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = EfficientJSONBlogs.playground; sourceTree = "<group>"; };
 		E4D8C8B01998E37E00546F77 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -115,7 +113,6 @@
 				E44732A019F6A87A00B14C7D /* Playgrounds */,
 				E45F95F319F5851200EEC199 /* Models */,
 				E456191C1993A1DC00A38730 /* ViewController.swift */,
-				E4CAA40B19FEC2F0008D4881 /* README.md */,
 				E456191E1993A1DC00A38730 /* Main.storyboard */,
 				E45619371993A20C00A38730 /* JSONSwift.swift */,
 				E4D8C8B01998E37E00546F77 /* Result.swift */,
@@ -274,7 +271,6 @@
 			files = (
 				E45619381993A20C00A38730 /* JSONSwift.swift in Sources */,
 				E4CAA40319FEA2DD008D4881 /* FlickrFetcher.m in Sources */,
-				E4CAA40C19FEC2F0008D4881 /* README.md in Sources */,
 				E4BF2D1519EFB98F00E4FC48 /* Blog.swift in Sources */,
 				E456191D1993A1DC00A38730 /* ViewController.swift in Sources */,
 				E4BF2D1319EFA3F800E4FC48 /* RespondParse.swift in Sources */,

@@ -73,18 +73,7 @@ final class Box<A> {
 enum Result<A> {
     case Error(NSError)
     case Value(Box<A>)
-    
-    var description : String {
-        get {
-            switch self{
-            case let .Error(err):
-                return "\(err.localizedDescription)"
-            case let .Value(box):
-                return "\(box.value)"
-            }
-        }
-    }
-    
+        
     init(_ error: NSError?, _ value: A) {
         if let err = error {
             self = .Error(err)
