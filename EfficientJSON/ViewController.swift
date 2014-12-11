@@ -48,7 +48,7 @@ class ViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cellIdentifier = "PlaceCell"
         var cell:UITableViewCell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as UITableViewCell
-        cell.textLabel.text = self.places![indexPath.row].content
+        cell.textLabel?.text = self.places![indexPath.row].content
         cell.detailTextLabel!.text = "\(self.places![indexPath.row].photoCount)"
         return cell
     }

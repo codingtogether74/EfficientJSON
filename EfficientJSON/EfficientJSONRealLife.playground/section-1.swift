@@ -89,13 +89,6 @@ func <*><A, B>(f: (A -> B)?, a: A?) -> B? {
 
 //~~~~~~~~~~ enum  Result<A> ~~~~~~~~~~~~
 
-final class Box<A> {
-    let value: A
-    
-    init(_ value: A) {
-        self.value = value
-    }
-}
 
 enum Result<A> {
     case Error(NSError)
@@ -109,6 +102,15 @@ enum Result<A> {
         }
     }
 }
+
+final class Box<A> {
+    let value: A
+    
+    init(_ value: A) {
+        self.value = value
+    }
+}
+
 //----------------------------- from Optional to Result<A> ---------
 
 func resultFromOptional<A>(optional: A?, error: NSError) -> Result<A> {
@@ -145,7 +147,7 @@ func decodeJSON(data: NSData?) -> JSON? {
         return .None
     }
 }
-//--------------------- OPERATOR >>> для Result---
+//--------------------- OPERATOR >>> for Result---
 
 
 func >>><A, B>(a: Result<A>, f: A -> Result<B>) -> Result<B> {
@@ -188,11 +190,11 @@ func pure<A>(a: A) -> A? {
 //---------------- Use Generics -----------
 
 protocol JSONDecodable {
-    class func decode1(json: JSON) -> Self?
+    class func decode(json: JSON) -> Self?
 }
 
 func decodeObject<A: JSONDecodable>(json: JSON) -> Result<A> {
-    return resultFromOptional(A.decode1(json), NSError(localizedDescription: "no some components of User")) // custom error
+    return resultFromOptional(A.decode(json), NSError(localizedDescription: "no some components of User")) // custom error
 }
 
 func _JSONParse<A>(json: JSON) -> A? {
@@ -200,29 +202,29 @@ func _JSONParse<A>(json: JSON) -> A? {
 }
 
 func _JSONParse<A: JSONDecodable>(json: JSON) -> A? {
-    return A.decode1(json)
+    return A.decode(json)
 }
 
 extension String: JSONDecodable {
-   static func decode1(json: JSON) -> String? {
+   static func decode(json: JSON) -> String? {
         return json as? String
     }
 }
 
 extension Int: JSONDecodable {
-    static func decode1(json: JSON) -> Int? {
+    static func decode(json: JSON) -> Int? {
         return json as? Int
     }
 }
 
 extension Double: JSONDecodable {
-   static func decode1(json: JSON) -> Double? {
+   static func decode(json: JSON) -> Double? {
         return json as? Double
     }
 }
 
 extension Bool: JSONDecodable {
-    static func decode1(json: JSON) -> Bool? {
+    static func decode(json: JSON) -> Bool? {
         return json as? Bool
     }
 }
@@ -279,7 +281,7 @@ struct User: JSONDecodable, Printable {
     
 //---------- Final version -------------
     
-    static func decode1(json: JSON) -> User? {
+    static func decode(json: JSON) -> User? {
         return _JSONParse(json) >>> { d in
             User.create
                 <^> d <|  "id"
@@ -290,13 +292,13 @@ struct User: JSONDecodable, Printable {
 /*
 //---------- Version with extract -------------
     
-    static func decode1(json: JSON) -> User? {
+    static func decode(json: JSON) -> User? {
 
            return _JSONParse(json) >>> { d in
-                User.create <^>
-                    extract (d,"id")    <*>
-                    extract (d,"name")  <*>
-                    extractPure (d,"email")
+                User.create
+                    <^> extract (d,"id")    
+                    <*> extract (d,"name") 
+                    <*> extractPure (d,"email")
             }
     }
 */
