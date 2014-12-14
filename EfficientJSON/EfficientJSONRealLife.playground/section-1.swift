@@ -240,7 +240,7 @@ func extractPure<A>(json: JSONDictionary, key: String) -> A?? {
 
 
 infix operator <| { associativity left precedence 150 }
-infix operator <|* { associativity left precedence 150 }
+infix operator <|? { associativity left precedence 150 }
 
 func <|<A: JSONDecodable>(d: JSONDictionary, key: String) -> A? {
     return d[key] >>> _JSONParse
@@ -259,7 +259,7 @@ func <|<A: JSONDecodable>(d: JSONDictionary, key: String) -> [A]? {
 }
 
 // Pull optional value from JSON
-func <|*<A: JSONDecodable>(d: JSONDictionary, key: String) -> A?? {
+func <|?<A: JSONDecodable>(d: JSONDictionary, key: String) -> A?? {
     return pure(d <| key)
 }
 
@@ -286,7 +286,7 @@ struct User: JSONDecodable, Printable {
             User.create
                 <^> d <|  "id"
                 <*> d <|  "name"
-                <*> d <|* "email"
+                <*> d <|? "email"
         }
     }
 /*
